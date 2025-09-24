@@ -65,12 +65,7 @@
                             Dashboard
                         </a>
 
-                        <a class="nav-link <?php echo url_is("/dashboard/events") ? 'active' : ''; ?>" href="<?= route_to('dashboard.events'); ?>">
-                            <div class="sb-nav-link-icon"><i class="fa-solid fa-calendar"></i></div>
-                            Eventos
-                        </a>
-
-                        <a class="nav-link <?php echo url_is("/dashboard/igrejas") ? 'active' : ''; ?>" href="<?= route_to('igrejas.list'); ?>">
+                        <a class="nav-link <?php echo url_is("/dashboard/igrejas") ? 'active' : ''; ?>" href="<?= route_to('dashboard.igrejas'); ?>">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-church"></i></div>
                             Igrejas
                         </a>

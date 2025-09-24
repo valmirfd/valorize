@@ -12,3 +12,4 @@ service('auth')->routes($routes);
 
 require APPPATH . 'Routes/ManagerRoutes.php';
 require APPPATH . 'Routes/DashboardRoutes.php';
+require APPPATH . 'Routes/ApiRoutes.php';
