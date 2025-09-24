@@ -44,12 +44,12 @@ abstract class AppModel extends Model
     protected function setCode(array $data): array
     {
         do {
-            $codigo = rand(10000000, 99999999);
+            $code = rand(10000000, 99999999);
 
-            $result = $this->select('codigo')->where('codigo', $codigo)->countAllResults();
+            $result = $this->select('code')->where('code', $code)->countAllResults();
         } while ($result > 0);
 
-        $data['data']['codigo'] = $codigo;
+        $data['data']['code'] = $code;
 
         return $data;
     }
