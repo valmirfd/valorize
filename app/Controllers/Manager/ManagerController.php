@@ -9,6 +9,10 @@ class ManagerController extends BaseController
 {
     public function index()
     {
-        echo 'Manager Controller';
+        $data = [
+            'title' => 'Home'
+        ];
+
+        return view('Manager/Home/index', $data);
     }
 }
