@@ -58,7 +58,7 @@ class Autoload extends AutoloadConfig
      *
      * @var array<string, string>
      */
-    public $classmap = [];
+    public $classmap = ['ApiResponse' => APPPATH . 'Libraries/ApiResponse.php'];
 
     /**
      * -------------------------------------------------------------------
@@ -88,5 +88,5 @@ class Autoload extends AutoloadConfig
      *
      * @var list<string>
      */
-    public $helpers = ['auth', 'setting'];
+    public $helpers = ['auth', 'setting', 'encryption', 'form', 'text', 'number', 'html'];
 }
