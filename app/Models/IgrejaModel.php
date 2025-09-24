@@ -16,21 +16,15 @@ class IgrejaModel extends AppModel
     protected $protectFields    = true;
     protected $allowedFields    = [
         'user_id',
+        'address_id',
         'nome',
         'telefone',
         'cnpj',
-        'codigo',
+        'code',
         'situacao',
-        'cep',
-        'rua',
-        'numero',
-        'bairro',
-        'cidade',
-        'estado',
         'superintendente_id',
         'titular_id',
         'is_sede',
-        'descricao',
         'ativo',
     ];
 
