@@ -19,7 +19,7 @@ class IgrejasController extends BaseController
     {
         $data = [
             'title' => 'Igrejas da Região',
-            'igrejas' => $this->igrejaModel
+            'igrejas' => $this->igrejaModel->whereUser()->orderBy('id', 'DESC')->findAll()
         ];
 
         return view('Dashboard/Igrejas/index', $data);

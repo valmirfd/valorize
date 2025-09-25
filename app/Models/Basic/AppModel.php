@@ -7,11 +7,6 @@ use CodeIgniter\Model;
 abstract class AppModel extends Model
 {
 
-    protected $primaryKey       = 'id';
-    protected $useAutoIncrement = true;
-    protected $useSoftDeletes   = false;
-    protected $protectFields    = true;
-
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = false;
 
