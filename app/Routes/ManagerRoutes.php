@@ -13,7 +13,7 @@ $routes = Services::routes();
 
 
 
-$routes->group('manager', ['namespace' => 'App\Controllers\Manager'], function ($routes) {
+$routes->group('manager', ['namespace' => 'App\Controllers\Manager', 'filter' => 'superadmin'], function ($routes) {
 
     $routes->get('/', [ManagerController::class, 'index'], ['as' => 'manager.home']);
 });
