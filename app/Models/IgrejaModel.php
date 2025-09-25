@@ -40,4 +40,21 @@ class IgrejaModel extends AppModel
         return $this->where('code', $code)->first() ??
             throw new PageNotFoundException("Igreja {$code} não encontrada");
     }
+
+    public function getByID(
+        string|int|null $igrejaID,
+        bool $withAddress = false,
+    ): Igreja {
+        $igreja = $this->where(['id' => $igrejaID])->first();
+
+        if ($igreja === null) {
+            throw new PageNotFoundException("Igreja não encontrada");
+        }
+
+        if ($withAddress) {
+            $igreja->address = model(AddressModel::class)->find($igreja->address_id);
+        }
+
+        return $igreja;
+    }
 }
