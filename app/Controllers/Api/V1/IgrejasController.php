@@ -22,8 +22,14 @@ class IgrejasController extends BaseController
     public function index()
     {
         $this->resposta->validate_request('get');
-        $igrejas = $this->igrejaModel->findAll();
+        $superID = auth()->user()->superintendente_id;
 
-        return $this->resposta->set_response(status: 200, message: 'success', data: $igrejas);
+        $igrejas = $this->igrejaModel->buscarIgrejasForUserAPI(superID: $superID,);
+
+        return $this->resposta->set_response(
+            status: 200,
+            message: 'success',
+            data: $igrejas,
+        );
     }
 }

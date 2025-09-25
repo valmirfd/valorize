@@ -6,24 +6,20 @@ use CodeIgniter\Model;
 
 abstract class AppModel extends Model
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->setSQLMode();
+    }
+
+    protected function setSQLMode(): void
+    {
+        $this->db->simpleQuery("set session sql_mode=''");
+    }
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = false;
 
-
-    // Dates
-    protected $useTimestamps = true;
-    protected $dateFormat    = 'datetime';
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
-    protected $deletedField  = 'deleted_at';
-
-
-
-    // Callbacks
-    protected $allowCallbacks = true;
-    protected $beforeInsert   = ['escapeData'];
-    protected $beforeUpdate   = ['escapeData'];
 
     protected function escapeData(array $data): array
     {

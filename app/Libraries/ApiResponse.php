@@ -7,7 +7,7 @@ class ApiResponse
     public function __construct()
     {
         // check if the api is active
-        if(!API_ACTIVE){
+        if (!API_ACTIVE) {
             echo $this->_api_not_active();
             die(1);
         }
@@ -16,7 +16,7 @@ class ApiResponse
     public function validate_request($method)
     {
         // validate request method
-        if($_SERVER['REQUEST_METHOD'] != strtoupper($method)){
+        if ($_SERVER['REQUEST_METHOD'] != strtoupper($method)) {
             echo $this->set_response_error(400, 'invalid request method');
             die(1);
         }
@@ -34,9 +34,10 @@ class ApiResponse
                     'datetime' => date('Y-m-d H:i:s'),
                     'timestamp' => time()
                 ],
-                'data' => $data
-            ]
-        , JSON_PRETTY_PRINT);
+                'data' => $data,
+            ],
+            JSON_PRETTY_PRINT
+        );
     }
 
     public function set_response_error($status = 404, $message = 'error')
@@ -52,8 +53,9 @@ class ApiResponse
                     'timestamp' => time()
                 ],
                 'data' => []
-            ]
-            , JSON_PRETTY_PRINT);
+            ],
+            JSON_PRETTY_PRINT
+        );
     }
 
     private function _api_not_active()
@@ -68,7 +70,8 @@ class ApiResponse
                     'timestamp' => time()
                 ],
                 'data' => []
-            ]
-        , JSON_PRETTY_PRINT);
+            ],
+            JSON_PRETTY_PRINT
+        );
     }
 }
