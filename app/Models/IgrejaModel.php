@@ -4,10 +4,17 @@ namespace App\Models;
 
 use App\Entities\Igreja;
 use App\Models\Basic\AppModel;
-
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 class IgrejaModel extends AppModel
 {
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->beforeInsert = array_merge($this->beforeInsert, ['setUserId', 'setCode']);
+    }
+
     protected $table            = 'igrejas';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
@@ -28,6 +35,9 @@ class IgrejaModel extends AppModel
         'ativo',
     ];
 
-    // Callbacks
-    protected $beforeInsert   = ['setCode'];
+    public function getByCode(string $code): Igreja
+    {
+        return $this->where('code', $code)->first() ??
+            throw new PageNotFoundException("Igreja {$code} não encontrada");
+    }
 }
