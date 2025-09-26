@@ -167,7 +167,15 @@ class IgrejasController extends BaseController
 
         $address->fill($this->validator->getValidated());
 
-        
+        $success = $this->igrejaModel->store(igreja: $igreja, address: $address);
+
+        if (!$success) {
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'Erro ao editar Igreja',
+                errors: []
+            );
+        }
 
         return $this->resposta->set_response(
             status: 200,
