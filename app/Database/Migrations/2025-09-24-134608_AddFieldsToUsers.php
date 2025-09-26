@@ -37,6 +37,18 @@ class AddFieldsToUsers extends Migration
                 'type'                  => 'BOOLEAN',
                 'default'               => true,
             ],
+            'is_superintendente'       => [
+                'type'       => 'BOOLEAN',
+                'null' => false,
+                'default' => true,
+            ],
+            'superintendente_id' => [
+                'type'           => 'INT',
+                'constraint'     => 11,
+                'null'           => true,
+                'default'        => null,
+            ],
+
 
         ];
 
@@ -52,5 +64,7 @@ class AddFieldsToUsers extends Migration
         $this->forge->dropColumn('users', 'birth');
         $this->forge->dropColumn('users', 'phone');
         $this->forge->dropColumn('users', 'display_phone');
+        $this->forge->dropColumn('users', 'is_superintendente');
+        $this->forge->dropColumn('users', 'superintendente_id');
     }
 }

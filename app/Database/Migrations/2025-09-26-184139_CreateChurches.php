@@ -16,6 +16,12 @@ class CreateChurches extends Migration
                 'unsigned'       => true,
                 'auto_increment' => true,
             ],
+            'user_id'          => [
+                'type'           => 'INT',
+                'constraint'     => 11,
+                'unsigned'       => true,
+                'null'           => false,
+            ],
             'name'       => [
                 'type'       => 'VARCHAR',
                 'constraint' => '128',
@@ -31,6 +37,25 @@ class CreateChurches extends Migration
             'address'       => [
                 'type'       => 'VARCHAR',
                 'constraint' => '170',
+            ],
+            'superintendente_id' => [
+                'type'           => 'INT',
+                'constraint'     => 11,
+                'unsigned'       => true,
+                'null'           => true,
+                'default'        => null,
+            ],
+            'titular_id' => [
+                'type'           => 'INT',
+                'constraint'     => 11,
+                'unsigned'       => true,
+                'null'           => true,
+                'default'        => null,
+            ],
+            'is_sede'       => [
+                'type'       => 'BOOLEAN',
+                'null' => false,
+                'default' => false,
             ],
             'created_at'       => [
                 'type'       => 'DATETIME',
@@ -54,6 +79,8 @@ class CreateChurches extends Migration
         $this->forge->addKey('name');
         $this->forge->addKey('phone');
         $this->forge->addKey('email');
+
+        $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
 
 
         $this->forge->createTable('churches');
