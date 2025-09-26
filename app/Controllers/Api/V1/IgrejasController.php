@@ -3,10 +3,12 @@
 namespace App\Controllers\Api\V1;
 
 use App\Controllers\BaseController;
-use CodeIgniter\HTTP\ResponseInterface;
 use App\Libraries\ApiResponse;
 use App\Models\IgrejaModel;
 use CodeIgniter\Config\Factories;
+use CodeIgniter\Format\JSONFormatter;
+use CodeIgniter\HTTP\Response;
+use PHPUnit\Util\Json;
 
 class IgrejasController extends BaseController
 {
@@ -19,17 +21,23 @@ class IgrejasController extends BaseController
         $this->igrejaModel = model(IgrejaModel::class);
     }
 
-    public function index()
+
+    /**
+     * Método responsável em retornar uma string no formato json
+     * com todas as Igrejas do usuário logado
+     *
+     * @return string
+     */
+    public function index(): string
     {
         $this->resposta->validate_request('get');
-        $superID = auth()->user()->superintendente_id;
 
-        $igrejas = $this->igrejaModel->buscarIgrejasForUserAPI(superID: $superID,);
+        $igrejas = $this->igrejaModel->asObject()->buscarIgrejasForUserAPI(userID: auth()->user()->id);
 
         return $this->resposta->set_response(
             status: 200,
             message: 'success',
-            data: $igrejas,
+            data: $igrejas
         );
     }
 }
