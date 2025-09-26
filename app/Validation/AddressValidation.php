@@ -43,10 +43,10 @@ class AddressValidation
                 ],
             ],
             'state' => [
-                'rules' => "required",
+                'rules' => "required|exact_length[2]",
                 'errors' => [
                     'required' => 'Informe o Estado.',
-
+                    'exact_length' => 'Informe apenas dois caractéres. Ex: MG',
                 ],
             ],
         ];

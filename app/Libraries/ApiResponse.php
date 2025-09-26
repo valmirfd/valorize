@@ -40,7 +40,7 @@ class ApiResponse
         );
     }
 
-    public function set_response_error($status = 404, $message = 'error')
+    public function set_response_error($status = 404, $message = 'error', $errors = [])
     {
         // api generic error response
         return json_encode(
@@ -52,7 +52,7 @@ class ApiResponse
                     'datetime' => date('Y-m-d H:i:s'),
                     'timestamp' => time()
                 ],
-                'data' => []
+                'errors' => $errors
             ],
             JSON_PRETTY_PRINT
         );

@@ -23,7 +23,7 @@ class IgrejaValidation
                 ],
             ],
             'telefone' => [
-                'rules' => "required|validate_phone|exact_length[15]|is_unique[igrejas.telefone,id,{id}]",
+                'rules' => "required|exact_length[15]|is_unique[igrejas.telefone,id,{$id}]",
                 'errors' => [
                     'required' => 'Informe o telefone da Igreja',
                     'exact_length' => 'O telefone deve ter exatamente 15 caractéres. Ex.: (00) 98888-8888',

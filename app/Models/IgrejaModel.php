@@ -79,37 +79,44 @@ class IgrejaModel extends AppModel
         return $igrejas;
     }
 
-
-
-    public function getByCode(string $code): Igreja
-    {
-        return $this->where('code', $code)->first() ??
-            throw new PageNotFoundException("Igreja {$code} não encontrada");
-    }
-
+    /**
+     * Retorna uma Igreja pelo ID
+     *
+     * @param string|integer|null $igrejaID
+     * @param boolean $withAddress
+     * @return Igreja|array|null
+     */
     public function getByID(
         string|int|null $igrejaID,
         bool $withAddress = false,
-    ): Igreja {
-        $igreja = $this->where(['id' => $igrejaID])->first();
+    ): Igreja|array|null {
+        $data = [];
+
+        $igreja = $this->where(['id' => $igrejaID])->where('superintendente_id', auth()->user()->superintendente_id)->asObject()->first();
 
         if ($igreja === null) {
-            throw new PageNotFoundException("Igreja não encontrada");
+            return null;
         }
+
+        $igreja->images = $this->buscaImagemIgreja($igreja->id);
 
         if ($withAddress) {
-            $igreja->address = model(AddressModel::class)->find($igreja->address_id);
+            $igreja->address = model(AddressModel::class)->asObject()->find($igreja->address_id);
         }
 
-        return $igreja;
+        $data[] = $igreja;
+
+        return $data;
     }
 
 
-    public function buscaImagemIgreja(int $igrejaID): array
-    {
-        return $this->db->table('igrejas_images')->where('igreja_id', $igrejaID)->get()->getResult();
-    }
-
+    /**
+     * Método responsável tanto para salvar como para editar uma Igreja
+     *
+     * @param Igreja $igreja
+     * @param Address $address
+     * @return boolean
+     */
     public function store(Igreja $igreja, Address $address): bool
     {
         try {
@@ -131,5 +138,28 @@ class IgrejaModel extends AppModel
             log_message('error', "Erro ao salvar a Igreja {$th->getMessage()}");
             return false;
         }
+    }
+
+    /**
+     * Bucar as imagens da Igreja de acordo com o ID informado
+     *
+     * @param integer $igrejaID
+     * @return array
+     */
+    public function buscaImagemIgreja(int $igrejaID): array
+    {
+        return $this->db->table('igrejas_images')->where('igreja_id', $igrejaID)->get()->getResult();
+    }
+
+    /**
+     * Busca uma Igreja de acordo com o código informado
+     *
+     * @param string $code
+     * @return Igreja
+     */
+    public function getByCode(string $code): Igreja
+    {
+        return $this->where('code', $code)->first() ??
+            throw new PageNotFoundException("Igreja {$code} não encontrada");
     }
 }
