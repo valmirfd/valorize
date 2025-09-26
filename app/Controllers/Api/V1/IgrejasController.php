@@ -10,9 +10,7 @@ use App\Models\IgrejaModel;
 use App\Validation\AddressValidation;
 use App\Validation\IgrejaValidation;
 use CodeIgniter\Config\Factories;
-use CodeIgniter\Format\JSONFormatter;
-use CodeIgniter\HTTP\Response;
-use PHPUnit\Util\Json;
+
 
 class IgrejasController extends BaseController
 {

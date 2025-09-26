@@ -18,12 +18,6 @@ class Igreja extends Entity
         $this->attributes['deleted_at'] = null;
     }
 
-    public function unsetAuxiliaryAttributes()
-    {
-        //unset($this->attributes['address']);
-        unset($this->attributes['images']);
-    }
-
     public function exibeSituacao(): string
     {
         return $this->attributes['situacao'] === 'sede' ? '<span class="badge badge-success text-white">Sede</span>' : '<span class="badge badge-success text-white">Filial</span>';
