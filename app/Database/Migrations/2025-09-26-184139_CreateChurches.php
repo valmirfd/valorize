@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateAddresses extends Migration
+class CreateChurches extends Migration
 {
     public function up()
     {
@@ -16,31 +16,21 @@ class CreateAddresses extends Migration
                 'unsigned'       => true,
                 'auto_increment' => true,
             ],
-            'street'       => [
+            'name'       => [
                 'type'       => 'VARCHAR',
-                'constraint' => '70',
+                'constraint' => '128',
             ],
-            'number'       => [
+            'phone'       => [
                 'type'       => 'VARCHAR',
                 'constraint' => '20',
-                'null'       => true,
-                'default'    => null,
             ],
-            'city'       => [
+            'email'       => [
                 'type'       => 'VARCHAR',
-                'constraint' => '70',
+                'constraint' => '170',
             ],
-            'district'       => [
+            'address'       => [
                 'type'       => 'VARCHAR',
-                'constraint' => '70',
-            ],
-            'postalcode'       => [
-                'type'       => 'VARCHAR',
-                'constraint' => '9', // 32113-110
-            ],
-            'state'       => [
-                'type'       => 'VARCHAR',
-                'constraint' => '2',
+                'constraint' => '170',
             ],
             'created_at'       => [
                 'type'       => 'DATETIME',
@@ -60,18 +50,17 @@ class CreateAddresses extends Migration
         ]);
 
 
-        $this->forge->addKey('id', true);
-        $this->forge->addKey('street');
-        $this->forge->addKey('city');
-        $this->forge->addKey('district');
-        $this->forge->addKey('state');
-        $this->forge->addKey('postalcode');
+        $this->forge->addKey('id', true); // primary key
+        $this->forge->addKey('name');
+        $this->forge->addKey('phone');
+        $this->forge->addKey('email');
 
-        $this->forge->createTable('addresses');
+
+        $this->forge->createTable('churches');
     }
 
     public function down()
     {
-        $this->forge->dropTable('addresses');
+        $this->forge->dropTable('churches');
     }
 }

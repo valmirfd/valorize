@@ -2,26 +2,26 @@
 
 namespace App\Models;
 
-use App\Entities\Address;
-use App\Models\Basic\AppModel;
+use CodeIgniter\Model;
 
-
-class AddressModel extends AppModel
+class ChurchModel extends Model
 {
-    protected $table            = 'addresses';
+    protected $table            = 'churches';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = Address::class;
+    protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'street',
-        'number',
-        'city',
-        'district',
-        'postalcode',
-        'state'
+        'name',
+        'phone',
+        'email',
+        'address',
     ];
+
+    protected bool $allowEmptyInserts = false;
+    protected bool $updateOnlyChanged = false;
+
 
     // Dates
     protected $useTimestamps = true;
@@ -29,9 +29,4 @@ class AddressModel extends AppModel
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
-
-    // Callbacks
-    protected $allowCallbacks = true;
-    protected $beforeInsert   = ['escapeData'];
-
 }
