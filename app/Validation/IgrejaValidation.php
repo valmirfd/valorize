@@ -14,12 +14,6 @@ class IgrejaValidation
             'id' => [
                 'rules' => 'permit_empty|is_natural_no_zero'
             ],
-            'user_id' => [
-                'rules' => 'permit_empty'
-            ],
-            'address_id' => [
-                'rules' => 'permit_empty'
-            ],
             'nome' => [
                 'rules' => "required|min_length[3]|max_length[128]",
                 'errors' => [
@@ -42,25 +36,6 @@ class IgrejaValidation
                     'required' => 'O campo CNPJ é obrigatório. Informe um CNPJ válido.',
                 ],
             ],
-            'code' => [
-                'rules' => 'permit_empty'
-            ],
-            'situacao' => [
-                'rules' => 'permit_empty'
-            ],
-            'superintendente_id' => [
-                'rules' => 'permit_empty'
-            ],
-            'titular_id' => [
-                'rules' => 'permit_empty'
-            ],
-            'is_sede' => [
-                'rules' => 'permit_empty'
-            ],
-            'ativo' => [
-                'rules' => 'permit_empty'
-            ],
-
         ];
     }
 }
