@@ -64,7 +64,13 @@ class IgrejasController extends BaseController
         );
     }
 
-    public function create()
+
+    /**
+     * Cria uma nova Igreja e retorna os dados em Json
+     *
+     * @return string
+     */
+    public function create(): string
     {
         $rules = (new IgrejaValidation)->getRules();
         if (!$this->validate($rules)) {
@@ -112,6 +118,56 @@ class IgrejasController extends BaseController
         $igrejaID = $this->igrejaModel->getInsertID();
 
         $igreja = $this->igrejaModel->getByID($igrejaID);
+
+        return $this->resposta->set_response(
+            status: 200,
+            message: 'success',
+            data: $igreja
+        );
+    }
+
+    public function update(int $igrejaID): string
+    {
+        $igreja =  $this->igrejaModel->getByID(igrejaID: $igrejaID);
+
+        if ($igreja === null) {
+            return $this->resposta->set_response_error(status: 404, message: 'Igreja não encontrada');
+        }
+
+        $rules = (new IgrejaValidation)->getRules();
+        if (!$this->validate($rules)) {
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'error',
+                errors: $this->validator->getErrors()
+            );
+        }
+
+        $post = $this->request->getJSON(assoc: true);
+
+
+        $data = [
+            $igreja->nome = $post['nome'],
+            $igreja->telefone = $post['telefone'],
+            $igreja->cnpj = $post['cnpj']
+
+        ];
+
+        $rules = (new AddressValidation)->getRules();
+        if (!$this->validate($rules)) {
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'error',
+                errors: $this->validator->getErrors()
+            );
+        }
+
+        //Recuparamos o endereço associado
+        $address = $igreja->address;
+
+        $address->fill($this->validator->getValidated());
+
+        
 
         return $this->resposta->set_response(
             status: 200,

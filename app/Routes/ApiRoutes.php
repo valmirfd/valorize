@@ -29,6 +29,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api\V1'], static function
             $routes->get('list', [IgrejasController::class, 'index']);
             $routes->get('show/(:num)', [IgrejasController::class, 'show']);
             $routes->post('create', [IgrejasController::class, 'create']);
+            $routes->put('update/(:num)', [IgrejasController::class, 'update']);
         });
     });
 });
