@@ -40,7 +40,8 @@ class AuthJWT extends ShieldAuthJWT
      * @var array<string, string>
      */
     public array $defaultClaims = [
-        'iss' => 'http://localhost:8080/',
+        'iss' => 'http://valorize.test/',
+        //'iss' => 'http://localhost:8080/',
     ];
 
     /**
@@ -80,7 +81,7 @@ class AuthJWT extends ShieldAuthJWT
      * --------------------------------------------------------------------
      * Specifies the amount of time, in seconds, that a token is valid.
      */
-    public int $timeToLive = HOUR;
+    public int $timeToLive = MONTH;
 
     /**
      * --------------------------------------------------------------------
