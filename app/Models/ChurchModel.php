@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use CodeIgniter\Model;
+use App\Models\Basic\AppModel;
 
-class ChurchModel extends Model
+
+class ChurchModel extends AppModel
 {
     protected $table            = 'churches';
     protected $primaryKey       = 'id';
