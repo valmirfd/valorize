@@ -89,14 +89,8 @@ class IgrejasController extends BaseController
         //instanciamos a Igreja com os dados validados
         $igreja = new Igreja($this->validator->getValidated());
 
-        echo '<pre>';
-        print_r($this->request->getPost());
-        exit;
-
         //instanciamos o endereço com os dados validados
         $address = new Address($this->validator->getValidated());
-
-
 
         $success = $this->igrejaModel->store(igreja: $igreja, address: $address);
 

@@ -32,6 +32,12 @@ abstract class AppModel extends Model
         return $data;
     }
 
+    protected function setSuperId(array $data): array
+    {
+        $data['data']['superintendente_id'] = auth()->id();
+        return $data;
+    }
+
     protected function setCode(array $data): array
     {
         if (!isset($data['data'])) {

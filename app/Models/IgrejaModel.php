@@ -43,7 +43,7 @@ class IgrejaModel extends AppModel
 
     // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert   = ['escapeData', 'setUserId', 'setCode'];
+    protected $beforeInsert   = ['escapeData', 'setUserId', 'setCode', 'setSuperId'];
     protected $beforeUpdate   = ['escapeData'];
 
 
