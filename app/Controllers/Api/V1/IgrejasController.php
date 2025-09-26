@@ -86,11 +86,12 @@ class IgrejasController extends BaseController
             );
         }
 
-        //instanciamos a Igreja com os dados validados
-        $igreja = new Igreja($this->validator->getValidated());
 
         //instanciamos o endereço com os dados validados
         $address = new Address($this->validator->getValidated());
+
+        //instanciamos a Igreja com os dados validados
+        $igreja = new Igreja($this->validator->getValidated());
 
         $success = $this->igrejaModel->store(igreja: $igreja, address: $address);
 
@@ -102,7 +103,9 @@ class IgrejasController extends BaseController
             );
         }
 
-        $igreja = $this->igrejaModel->getInsertID();
+        $igrejaID = $this->igrejaModel->getInsertID();
+
+        $igreja = $this->igrejaModel->getByID($igrejaID);
 
         return $this->resposta->set_response(
             status: 200,

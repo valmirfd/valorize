@@ -124,9 +124,11 @@ class IgrejaModel extends AppModel
             //Iniciamos a transaction
             $this->db->transException(true)->transStart();
 
+            //Aqui salva o endereço
             model(AddressModel::class)->save($address);
             $igreja->address_id = $address->id ?? model(AddressModel::class)->getInsertID();
 
+            //Aqui salva a Igreja
             $this->save($igreja);
 
             //Finalizamos a transaction
