@@ -21,24 +21,9 @@ class IgrejasController extends BaseController
 
     public function index()
     {
-        $user = auth()->user();
+        $data = $this->igrejaService->buscarIgrejasForUserAPI();
 
-        echo '<pre>';
-        print_r($user);
-        exit;
 
-        /*$perPage = $this->request->getGet('perPage');
-        $page = $this->request->getGet('page');
-
-        $igrejas = (object) $this->igrejaService->buscarIgrejasForUserAPI(perPage: $perPage, page: $page);
-        $pager = $igrejas->pager;
-
-        return $this->respond(
-            [
-                'code' => 200,
-                'igrejas' => $igrejas->igrejas,
-                'pager' => $pager
-            ]
-        );*/
+        return $this->respond(data: $data, status: 200, message: 'success');
     }
 }

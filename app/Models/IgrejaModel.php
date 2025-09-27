@@ -52,7 +52,7 @@ class IgrejaModel extends AppModel
 
 
     //---------API------------------------//
-    public function buscarIgrejasForUserAPI(int|null $perPage = null, int|null $page = null)
+    public function buscarIgrejasForUserAPI(bool $withAddress = true)
     {
         $builder = $this;
 
@@ -61,16 +61,18 @@ class IgrejaModel extends AppModel
         ];
 
         $builder->select($tableFields);
-        $builder->where('igrejas.user_id', $this->user->id);
-        $builder->where('igrejas.user_id', $this->user->id);
+        $builder->where('igrejas.superintendente_id', $this->user->id);
         $builder->groupBy('igrejas.nome'); // para não repetir registros
         $builder->orderBy('igrejas.id', 'DESC');
 
-        $igrejas = $this->paginate(perPage: $perPage, page: $page);
+        $igrejas = $builder->findAll();
 
         if (!empty($igrejas)) {
             foreach ($igrejas as $igreja) {
                 $igreja->images = $this->buscaImagemIgreja($igreja->id);
+                if ($withAddress) {
+                    $igreja->address = model(AddressModel::class)->asObject()->find($igreja->address_id);
+                }
             }
         }
 

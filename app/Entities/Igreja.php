@@ -62,12 +62,12 @@ class Igreja extends Entity
 
         if (url_is('api/igrejas*')) {
 
-            return site_url('web/images/usuario_sem_imagem.png');
+            return site_url('images/no_image.png');
         }
 
         return img(
             [
-                'src'       => site_url('web/images/usuario_sem_imagem.png'),
+                'src'       => site_url('images/no_image.png'),
                 'alt'       => 'No image yet',
                 'name'     => 'No image yet',
                 'class'     => $classImage,

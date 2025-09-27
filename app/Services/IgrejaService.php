@@ -21,15 +21,14 @@ class IgrejaService
 
 
     //---------API------------------------//
-    public function buscarIgrejasForUserAPI(int|null $perPage = null, int|null $page = null)
+    public function buscarIgrejasForUserAPI(bool $withAddress = true)
     {
-        $igrejas = $this->igrejaModel->buscarIgrejasForUserAPI($perPage, $page);
-        $pager = (!empty($igrejas) ? $this->igrejaModel->pager->getDetails() : []);
+        $igrejas = $this->igrejaModel->buscarIgrejasForUserAPI($withAddress);
+
 
         if (empty($igrejas)) {
             return [
-                'igrejas' => [],
-                'pager' => $pager
+                'igrejas' => []
             ];
         }
 
@@ -39,20 +38,24 @@ class IgrejaService
 
             $data[] = [
                 'id'         => $igreja->id,
-                'belongs_to' => $igreja->username,
-                'images'     => $igreja->image(),
+                'user_id'    => $igreja->user_id,
                 'nome'       => $igreja->nome,
                 'telefone'   => $igreja->telefone,
-                'codigo'     => $igreja->codigo,
-                'address'    => $igreja->address(),
+                'cnpj'       => $igreja->cnpj,
+                'code'       => $igreja->code,
+                'situacao'   => $igreja->situacao,
+                'address_id' => $igreja->address_id,
+                'address'    => $igreja->address,
+                'titular_id' => $igreja->titular_id,
+                'is_sede'    => $igreja->is_sede,
+                'ativo'      => $igreja->is_sede,
+                'images'     => $igreja->image(),
                 'created_at' => $igreja->created_at,
                 'updated_at' => $igreja->updated_at,
+                'superintendente_id' => $igreja->superintendente_id,
             ];
         }
 
-        return [
-            'igrejas' => $data,
-            'pager' => $pager
-        ];
+        return $data;
     }
 }
