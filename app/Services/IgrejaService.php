@@ -7,10 +7,12 @@ use App\Entities\Igreja;
 use App\Models\IgrejaModel;
 use CodeIgniter\Config\Factories;
 
+
+
 class IgrejaService
 {
     private $igrejaModel;
-    private $user;
+    //private $user;
 
     public function __construct()
     {
@@ -23,7 +25,15 @@ class IgrejaService
 
 
     //---------API------------------------//
-    public function buscarIgrejasForUserAPI(bool $withAddress = true)
+    
+
+    /**
+     * Método responsável em buscar todas as Igreja do usuário logado e o endereço associado a elas 
+     *
+     * @param boolean $withAddress
+     * @return array
+     */
+    public function buscarIgrejasForUserAPI(bool $withAddress = true): array
     {
         $igrejas = $this->igrejaModel->buscarIgrejasForUserAPI($withAddress);
 
@@ -61,6 +71,12 @@ class IgrejaService
         return $data;
     }
 
+    /**
+     * Busca uma igreja de acordo o ID informado
+     *
+     * @param [type] $igrejaID
+     * @return Igreja|null
+     */
     public function getByID($igrejaID): Igreja|null
     {
         return $this->igrejaModel->getByID($igrejaID);

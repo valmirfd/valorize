@@ -53,7 +53,15 @@ class IgrejaModel extends AppModel
 
 
     //---------API------------------------//
-    public function buscarIgrejasForUserAPI(bool $withAddress = true)
+
+
+    /**
+     * Retorna todas as Igrejas do usuário logado se $withAddress for true devolve também os endereços associados a elas
+     *
+     * @param boolean $withAddress
+     * @return array
+     */
+    public function buscarIgrejasForUserAPI(bool $withAddress = true): array
     {
         $builder = $this;
 
@@ -80,6 +88,13 @@ class IgrejaModel extends AppModel
         return $igrejas;
     }
 
+    /**
+     * Retorna uma Igreja de acordo com o ID informado se $withAddress for true devolve também o endereço associado a ela
+     *
+     * @param string|null $igrejaID
+     * @param boolean $withAddress
+     * @return Igreja|null
+     */
     public function getByID(
         string|null $igrejaID,
         bool $withAddress = true,
@@ -98,6 +113,13 @@ class IgrejaModel extends AppModel
         return $igreja;
     }
 
+    /**
+     * Método responsável em salvar ou editar as Igrejas
+     *
+     * @param Igreja $igreja
+     * @param Address $address
+     * @return boolean
+     */
     public function store(Igreja $igreja, Address $address): bool
     {
         try {
@@ -122,6 +144,12 @@ class IgrejaModel extends AppModel
     }
 
 
+    /**
+     * Busca as imagens de acordo com o ID da Igreja
+     *
+     * @param integer $igrejaID
+     * @return array
+     */
     public function buscaImagemIgreja(int $igrejaID): array
     {
         return $this->db->table('igrejas_images')->where('igreja_id', $igrejaID)->get()->getResult();

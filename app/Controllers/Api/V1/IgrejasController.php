@@ -76,7 +76,7 @@ class IgrejasController extends BaseController
         return $this->respondCreated(data: $data, message: 'success');
     }
 
-    public function show($igrejaID = null): ResponseInterface
+    public function show(int|null $igrejaID = null): ResponseInterface
     {
         $igreja = $this->igrejaService->getByID($igrejaID);
         $data = [];
@@ -87,5 +87,10 @@ class IgrejasController extends BaseController
         $data[] = $igreja;
 
         return $this->respond(data: $data, status: ResponseInterface::HTTP_OK);
+    }
+
+    public function update(int|null $igrejaID = null)
+    {
+        
     }
 }
