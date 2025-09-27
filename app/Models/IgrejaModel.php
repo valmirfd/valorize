@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Entities\Address;
 use App\Entities\Igreja;
 use App\Models\Basic\AppModel;
 
@@ -77,6 +78,47 @@ class IgrejaModel extends AppModel
         }
 
         return $igrejas;
+    }
+
+    public function getByID(
+        string|null $igrejaID,
+        bool $withAddress = true,
+
+    ): Igreja|null {
+        $igreja = $this->where(['id' => $igrejaID])->where('superintendente_id', $this->user->id)->first();
+
+        if ($igreja === null) {
+            return null;
+        }
+
+        if ($withAddress) {
+            $igreja->address = model(AddressModel::class)->asObject()->find($igreja->address_id);
+        }
+
+        return $igreja;
+    }
+
+    public function store(Igreja $igreja, Address $address): bool
+    {
+        try {
+
+            //Iniciamos a transaction
+            $this->db->transException(true)->transStart();
+
+            model(AddressModel::class)->save($address);
+            $igreja->address_id = $address->id ?? model(AddressModel::class)->getInsertID();
+
+            $this->save($igreja);
+
+            //Finalizamos a transaction
+            $this->db->transComplete();
+
+            //Retorna o status da transaction (true or false)
+            return $this->db->transStatus();
+        } catch (\Throwable $th) {
+            log_message('error', "Erro ao salvar a Igreja {$th->getMessage()}");
+            return false;
+        }
     }
 
 

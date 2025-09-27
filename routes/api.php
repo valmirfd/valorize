@@ -20,9 +20,9 @@ $routes->group('api', ['namespace' => 'App\Controllers\API\V1'], static function
 
         $routes->group('igrejas', ['namespace' => 'App\Controllers\API\V1'], static function ($routes) {
             $routes->get('list', [IgrejasController::class, 'index']);
-            $routes->get('get/(:num)', [IgrejasController::class, 'getIgreja']);
-            $routes->delete('destroy/(:num)', [IgrejasController::class, 'deletarIgreja']);
-            $routes->put('update/(:num)', [IgrejasController::class, 'edtarIgreja']);
+            $routes->get('get/(:num)', [IgrejasController::class, 'get']);
+            $routes->delete('destroy/(:num)', [IgrejasController::class, 'delete']);
+            $routes->put('update/(:num)', [IgrejasController::class, 'update']);
             $routes->post('create', [IgrejasController::class, 'create']);
         });
     });

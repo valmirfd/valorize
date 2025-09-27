@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Entities\Address;
+use App\Entities\Igreja;
 use App\Models\IgrejaModel;
 use CodeIgniter\Config\Factories;
 
@@ -57,5 +59,16 @@ class IgrejaService
         }
 
         return $data;
+    }
+
+    public function getByID($igrejaID): Igreja|null
+    {
+        return $this->igrejaModel->getByID($igrejaID);
+    }
+
+    public function store(Igreja $igreja, Address $address): bool
+    {
+        return $this->igrejaModel->store(igreja: $igreja, address: $address);
+        
     }
 }
