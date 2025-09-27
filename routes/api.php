@@ -23,7 +23,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\API\V1'], static function
             $routes->get('get/(:num)', [IgrejasController::class, 'getIgreja']);
             $routes->delete('destroy/(:num)', [IgrejasController::class, 'deletarIgreja']);
             $routes->put('update/(:num)', [IgrejasController::class, 'edtarIgreja']);
-            $routes->post('create', [IgrejasController::class, 'criarIgreja']);
+            $routes->post('create', [IgrejasController::class, 'create']);
         });
     });
 });
