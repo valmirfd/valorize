@@ -17,10 +17,16 @@ class ChurchesController extends ResourceController
      *
      * @return ResponseInterface
      */
-    public function index(): ResponseInterface
+    public function index()
     {
+        $churches = $this->model->whereUser()->orderBy('id', 'DESC')->findAll();
 
-        return $this->respond($this->model->whereUser()->orderBy('id', 'DESC')->findAll());
+        if ($churches === []) {
+
+            return $this->respond(data: ['message' => 'Ainda não há Igrejas cadastradas!'], status: 200, message: 'success');
+        }
+
+        return $this->respond(data: $churches, status: 200, message: 'success');
     }
 
     /**
@@ -39,19 +45,7 @@ class ChurchesController extends ResourceController
             return $this->failNotFound(code: ResponseInterface::HTTP_NOT_FOUND);
         }
 
-        //$company->routes = model(RouteModel::class)->where('company_id', $company->id)->findAll();
-
         return $this->respond(data: $church, status: ResponseInterface::HTTP_OK);
-    }
-
-    /**
-     * Return a new resource object, with default properties.
-     *
-     * @return ResponseInterface
-     */
-    public function new()
-    {
-        //
     }
 
     /**
@@ -78,18 +72,6 @@ class ChurchesController extends ResourceController
     }
 
     /**
-     * Return the editable properties of a resource object.
-     *
-     * @param int|string|null $id
-     *
-     * @return ResponseInterface
-     */
-    public function edit($id = null)
-    {
-        //
-    }
-
-    /**
      * Add or update a model resource, from "posted" properties.
      *
      * @param int|string|null $id
@@ -98,6 +80,14 @@ class ChurchesController extends ResourceController
      */
     public function update($id = null)
     {
+        //Busca a Igreja do user logado
+        $church = $this->model->whereUser()->find($id);
+
+        //Tentou editar uma Igreja que não é dele
+        if ($church === null) {
+            return $this->failNotFound(code: ResponseInterface::HTTP_NOT_FOUND);
+        }
+
         $rules = (new ChurchValidation)->getRules($id);
 
         if (!$this->validate($rules)) {
@@ -105,9 +95,9 @@ class ChurchesController extends ResourceController
             return $this->failValidationErrors($this->validator->getErrors());
         }
 
-        $inputRequest = esc($this->request->getJSON(assoc: true));
+        $inputRequest = $this->request->getJSON(assoc: true);
 
-        $this->model->update($id, $inputRequest);
+        $this->model->whereUser()->update($id, $inputRequest);
 
         $church = $this->model->find($id);
 
@@ -123,6 +113,16 @@ class ChurchesController extends ResourceController
      */
     public function delete($id = null)
     {
-        //
+        //Busca a Igreja do user logado
+        $church = $this->model->whereUser()->find($id);
+
+        //Tentou excluir uma Igreja que não é dele
+        if ($church === null) {
+            return $this->failNotFound(code: ResponseInterface::HTTP_NOT_FOUND);
+        }
+
+        $this->model->delete($id);
+
+        return $this->respondDeleted(data: $church, message: 'success');
     }
 }
