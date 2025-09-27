@@ -8,5 +8,111 @@ class Igreja extends Entity
 {
     protected $datamap = [];
     protected $dates   = ['created_at', 'updated_at', 'deleted_at'];
-    protected $casts   = [];
+    protected $casts   = [
+        'ativo'    => 'boolean',
+        'is_sede'  => 'boolean',
+    ];
+
+    public function recover()
+    {
+        $this->attributes['deleted_at'] = null;
+    }
+
+    public function unsetAuxiliaryAttributes()
+    {
+        //unset($this->attributes['address']);
+        unset($this->attributes['images']);
+    }
+
+    public function exibeSituacao(): string
+    {
+        return $this->attributes['situacao'] === 'sede' ? '<span class="badge badge-success text-white">Sede</span>' : '<span class="badge badge-success text-white">Filial</span>';
+    }
+
+    /**
+     * Método que retorna a imagem ou caminho conforme se fizer necessário
+     *
+     * @param string $classImage
+     * @param string $sizeImage
+     * @return mixed
+     */
+    public function image(string $classImage = '', string $sizeImage = 'regular')
+    {
+        if (empty($this->attributes['images'])) {
+
+            return $this->handleWithEmptyImage($classImage);
+        }
+
+        if (is_string($this->attributes['images'])) {
+
+            return $this->handleWithSingleImage($classImage, $sizeImage);
+        }
+
+        if (url_is('api/igrejas*')) {
+
+            return $this->handleWithImagesForAPI();
+        }
+    }
+
+
+    /// Métodos privados
+
+    private function handleWithEmptyImage(string $classImage): string
+    {
+
+        if (url_is('api/igrejas*')) {
+
+            return site_url('web/images/usuario_sem_imagem.png');
+        }
+
+        return img(
+            [
+                'src'       => site_url('web/images/usuario_sem_imagem.png'),
+                'alt'       => 'No image yet',
+                'name'     => 'No image yet',
+                'class'     => $classImage,
+                'width'     => '50',
+            ]
+        );
+    }
+
+
+    private function handleWithSingleImage(string $classImage, string $sizeImage): string
+    {
+
+        if (url_is('api/igrejas*')) {
+
+            return $this->buildRouteForImageAPI($this->attributes['images']);
+        }
+
+        return img(
+            [
+                //'src'       => route_to('imagem.igreja', $this->attributes['images'], $sizeImage),
+                'src'       => route_to('imagem.igreja', $this->attributes['images'], $sizeImage),
+                'alt'       => $this->attributes['nome'],
+                'name'     => $this->attributes['nome'],
+                'class'     => $classImage,
+                'width'     => '50',
+            ]
+        );
+    }
+
+
+    private function handleWithImagesForAPI(): array
+    {
+        $images = [];
+
+        foreach ($this->attributes['images'] as $image) {
+
+            $images[] = $this->buildRouteForImageAPI($image->image);
+        }
+
+        return $images;
+    }
+
+
+    private function buildRouteForImageAPI(string $image): string
+    {
+        return route_to('imagem.igreja', $image, 'small');
+    }
 }

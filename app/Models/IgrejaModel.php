@@ -8,6 +8,14 @@ use App\Models\Basic\AppModel;
 
 class IgrejaModel extends AppModel
 {
+    private $user;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->user = auth()->user();
+    }
+
     protected $table            = 'igrejas';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
@@ -16,50 +24,62 @@ class IgrejaModel extends AppModel
     protected $protectFields    = true;
     protected $allowedFields    = [
         'user_id',
+        'address_id',
         'nome',
         'telefone',
         'cnpj',
-        'codigo',
+        'code',
         'situacao',
-        'cep',
-        'rua',
-        'numero',
-        'bairro',
-        'cidade',
-        'estado',
         'superintendente_id',
         'titular_id',
-        'is_sede',
-        'descricao'
+        'is_sede'
     ];
 
-    protected bool $allowEmptyInserts = false;
-    protected bool $updateOnlyChanged = true;
-
-    protected array $casts = [];
-    protected array $castHandlers = [];
 
     // Dates
-    protected $useTimestamps = false;
+    protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
 
-    // Validation
-    protected $validationRules      = [];
-    protected $validationMessages   = [];
-    protected $skipValidation       = false;
-    protected $cleanValidationRules = true;
+
 
     // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
-    protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
-    protected $afterUpdate    = [];
-    protected $beforeFind     = [];
-    protected $afterFind      = [];
-    protected $beforeDelete   = [];
-    protected $afterDelete    = [];
+    protected $beforeInsert   = ['escapeData', 'setCode', 'setUserId', 'setSuperId'];
+    protected $beforeUpdate   = ['escapeData'];
+
+
+    //---------API------------------------//
+    public function buscarIgrejasForUserAPI(int|null $perPage = null, int|null $page = null)
+    {
+        $builder = $this;
+
+        $tableFields = [
+            'igrejas.*'
+        ];
+
+        $builder->select($tableFields);
+        $builder->where('igrejas.user_id', $this->user->id);
+        $builder->where('igrejas.user_id', $this->user->id);
+        $builder->groupBy('igrejas.nome'); // para não repetir registros
+        $builder->orderBy('igrejas.id', 'DESC');
+
+        $igrejas = $this->paginate(perPage: $perPage, page: $page);
+
+        if (!empty($igrejas)) {
+            foreach ($igrejas as $igreja) {
+                $igreja->images = $this->buscaImagemIgreja($igreja->id);
+            }
+        }
+
+        return $igrejas;
+    }
+
+
+    public function buscaImagemIgreja(int $igrejaID): array
+    {
+        return $this->db->table('igrejas_images')->where('igreja_id', $igrejaID)->get()->getResult();
+    }
 }

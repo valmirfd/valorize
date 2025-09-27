@@ -95,6 +95,7 @@ class CreateIgrejas extends Migration
         $this->forge->addKey('id', true); // primary key        
 
         $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('address_id', 'addresses', 'id', 'CASCADE', 'CASCADE');
 
         $this->forge->createTable('igrejas');
     }
