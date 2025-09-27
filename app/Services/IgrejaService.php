@@ -25,7 +25,7 @@ class IgrejaService
 
 
     //---------API------------------------//
-    
+
 
     /**
      * Método responsável em buscar todas as Igreja do usuário logado e o endereço associado a elas 
@@ -77,14 +77,18 @@ class IgrejaService
      * @param [type] $igrejaID
      * @return Igreja|null
      */
-    public function getByID($igrejaID): Igreja|null
+    public function getByID(string|null $igrejaID, bool $withAddress = true)
     {
-        return $this->igrejaModel->getByID($igrejaID);
+        return $this->igrejaModel->getByID(igrejaID: $igrejaID, withAddress: $withAddress);
     }
 
     public function store(Igreja $igreja, Address $address): bool
     {
         return $this->igrejaModel->store(igreja: $igreja, address: $address);
-        
+    }
+
+    public function destroy(Igreja $igreja): bool
+    {
+        return $this->igrejaModel->destroy($igreja);
     }
 }

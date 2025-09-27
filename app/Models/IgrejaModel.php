@@ -107,7 +107,7 @@ class IgrejaModel extends AppModel
         }
 
         if ($withAddress) {
-            $igreja->address = model(AddressModel::class)->asObject()->find($igreja->address_id);
+            $igreja->address = model(AddressModel::class)->find($igreja->address_id);
         }
 
         return $igreja;
@@ -139,6 +139,28 @@ class IgrejaModel extends AppModel
             return $this->db->transStatus();
         } catch (\Throwable $th) {
             log_message('error', "Erro ao salvar a Igreja {$th->getMessage()}");
+            return false;
+        }
+    }
+
+    public function destroy(Igreja $igreja): bool
+    {
+        try {
+
+            //Iniciamos a transaction
+            $this->db->transException(true)->transStart();
+
+            $this->delete($igreja->id);
+
+            model(AddressModel::class)->delete($igreja->address_id);
+
+            //Finalizamos a transaction
+            $this->db->transComplete();
+
+            //Retorna o status da transaction (true or false)
+            return $this->db->transStatus();
+        } catch (\Throwable $th) {
+            log_message('error', "Erro ao excluir a Igreja {$th->getMessage()}");
             return false;
         }
     }

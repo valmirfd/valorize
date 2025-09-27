@@ -91,6 +91,59 @@ class IgrejasController extends BaseController
 
     public function update(int|null $igrejaID = null)
     {
-        
+
+        $igreja = $this->igrejaService->getByID($igrejaID);
+        $data = [];
+        if ($igreja === null) {
+            return $this->failNotFound(description: 'Igreja não encotrada', code: ResponseInterface::HTTP_NOT_FOUND);
+        }
+
+        //Valida os dados da Igreja vindos no post
+        $rules = (new IgrejaValidation)->getRules($igreja->id);
+        if (!$this->validate($rules)) {
+            return $this->respond(data: $this->validator->getErrors(), status: 401, message: 'error');
+        }
+
+        $igreja->fill($this->validator->getValidated());
+
+        $rules = (new AddressValidation)->getRules();
+
+        if (!$this->validate($rules)) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        //Recuparamos o endereço associado
+        $address = $igreja->address;
+
+        $address->fill($this->validator->getValidated());
+
+        // Envia os dados para a classe de Serviço e Recebe tue ou false
+        $success = $this->igrejaService->store(igreja: $igreja, address: $address);
+
+        //Se não foi salvo os dados retorna uma mensagem de erro
+        if (!$success) {
+            return $this->respond(data: [], status: 401, message: 'error');
+        }
+
+        $igreja = $this->igrejaService->getByID(igrejaID: $igrejaID, withAddress: true);
+        $data[] = $igreja;
+
+        return $this->respondUpdated(data: $data, message: 'success');
+    }
+
+    public function destroy(int|null $igrejaID = null): ResponseInterface
+    {
+        $igreja = $this->igrejaService->getByID(igrejaID: $igrejaID, withAddress: false);
+
+        if ($igreja === null) {
+            return $this->failNotFound(description: 'Igreja não encotrada', code: ResponseInterface::HTTP_NOT_FOUND);
+        }
+
+        $success = $this->igrejaService->destroy($igreja);
+        if (!$success) {
+            return $this->respond(data: [], status: 401, message: 'error');
+        }
+
+        return $this->respondDeleted(data: $igreja, message: 'success');
     }
 }

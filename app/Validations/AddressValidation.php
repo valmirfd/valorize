@@ -11,6 +11,9 @@ class AddressValidation
     public function getRules(): array
     {
         return [
+            'id' => [
+                'rules' => 'permit_empty|is_natural_no_zero'
+            ],
             'street' => [
                 'rules' => "required",
             ],
