@@ -45,4 +45,25 @@ abstract class AppModel extends Model
         $this->where("{$this->table}.user_id", auth()->id());
         return $this;
     }
+
+    protected function setCode(array $data): array
+    {
+        if (!isset($data['data'])) {
+            return $data;
+        }
+
+        do {
+            $length = 10;
+            $characters = '0123456789';
+            $code = '';
+
+            for ($i = 0; $i < $length; $i++) {
+                $code .= $characters[random_int(0, strlen($characters) - 1)];
+            }
+        } while ($this->where(['code' => $code])->countAllResults() > 0);
+
+        $data['data']['code'] = $code;
+
+        return $data;
+    }
 }
