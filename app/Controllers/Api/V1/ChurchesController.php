@@ -26,7 +26,7 @@ class ChurchesController extends BaseController
 
     public function index()
     {
-        $data = $this->churchModel->buscarIgrejasForUserAPI(withAddress: true);
+        $data = $this->churchModel->getChurchesForUserAPI(withAddress: true);
 
         return $this->respond(data: $data, status: 200, message: 'success');
     }

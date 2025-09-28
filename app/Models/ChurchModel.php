@@ -151,6 +151,6 @@ class ChurchModel extends AppModel
     //Métodos Privados
     private function getImageChurch(int $churchID): array
     {
-        return $this->db->table('churches_images')->where('igreja_id', $churchID)->get()->getResult();
+        return $this->db->table('churches_images')->where('church_id', $churchID)->get()->getResult();
     }
 }

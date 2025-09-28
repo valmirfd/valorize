@@ -1,7 +1,6 @@
 <?php
 
 use App\Controllers\Api\V1\ChurchesController;
-use App\Controllers\Api\V1\IgrejasController;
 use App\Controllers\Api\V1\LoginController;
 use App\Controllers\Api\V1\RegisterController;
 
