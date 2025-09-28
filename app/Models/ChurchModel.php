@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Entities\Address;
 use App\Entities\Church;
 use App\Models\Basic\AppModel;
-use App\Validations\IgrejaValidation;
+
 
 class ChurchModel extends AppModel
 {
@@ -17,7 +17,7 @@ class ChurchModel extends AppModel
         $this->user = auth()->user();
     }
 
-    protected $table            = 'igrejas';
+    protected $table            = 'churches';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = Church::class;
@@ -54,31 +54,31 @@ class ChurchModel extends AppModel
 
 
 
-    public function buscarIgrejasForUserAPI(bool $withAddress = false): array
+    public function getChurchesForUserAPI(bool $withAddress = false): array
     {
         $builder = $this;
 
         $tableFields = [
-            'igrejas.*'
+            'churches.*'
         ];
 
         $builder->select($tableFields);
-        $builder->where('igrejas.superintendente_id', $this->user->id);
-        $builder->groupBy('igrejas.nome'); // para não repetir registros
-        $builder->orderBy('igrejas.id', 'DESC');
+        $builder->where('churches.superintendente_id', $this->user->id);
+        $builder->groupBy('churches.nome'); // para não repetir registros
+        $builder->orderBy('churches.id', 'DESC');
 
-        $igrejas = $builder->findAll();
+        $churches = $builder->findAll();
 
-        if (!empty($igrejas)) {
-            foreach ($igrejas as $igreja) {
-                $igreja->images = $this->buscaImagemIgreja($igreja->id);
+        if (!empty($churches)) {
+            foreach ($churches as $church) {
+                $church->images = $this->getImageChurch($church->id);
                 if ($withAddress) {
-                    $igreja->address = model(AddressModel::class)->asObject()->find($igreja->address_id);
+                    $church->address = model(AddressModel::class)->asObject()->find($church->address_id);
                 }
             }
         }
 
-        return $igrejas;
+        return $churches;
     }
 
     public function getByID(
@@ -149,8 +149,8 @@ class ChurchModel extends AppModel
 
 
     //Métodos Privados
-    private function buscaImagemIgreja(int $igrejaID): array
+    private function getImageChurch(int $churchID): array
     {
-        return $this->db->table('igrejas_images')->where('igreja_id', $igrejaID)->get()->getResult();
+        return $this->db->table('churches_images')->where('igreja_id', $churchID)->get()->getResult();
     }
 }

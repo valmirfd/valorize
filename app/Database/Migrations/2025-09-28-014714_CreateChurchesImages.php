@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateIgrejasImages extends Migration
+class CreateChurchesImages extends Migration
 {
     public function up()
     {
@@ -15,7 +15,7 @@ class CreateIgrejasImages extends Migration
                 'unsigned'       => true,
                 'auto_increment' => true,
             ],
-            'igreja_id'          => [
+            'church_id'          => [
                 'type'           => 'INT',
                 'constraint'     => 11,
                 'unsigned'       => true,
@@ -29,13 +29,13 @@ class CreateIgrejasImages extends Migration
 
         $this->forge->addKey('id', true); // primary key        
 
-        $this->forge->addForeignKey('igreja_id', 'igrejas', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('church_id', 'churches', 'id', 'CASCADE', 'CASCADE');
 
-        $this->forge->createTable('igrejas_images');
+        $this->forge->createTable('churches_images');
     }
 
     public function down()
     {
-        $this->forge->dropTable('igrejas_images');
+        $this->forge->dropTable('churches_images');
     }
 }

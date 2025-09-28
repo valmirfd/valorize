@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateIgrejas extends Migration
+class CreateChurches extends Migration
 {
     public function up()
     {
@@ -97,11 +97,11 @@ class CreateIgrejas extends Migration
         $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('address_id', 'addresses', 'id', 'CASCADE', 'CASCADE');
 
-        $this->forge->createTable('igrejas');
+        $this->forge->createTable('churches');
     }
 
     public function down()
     {
-        $this->forge->dropTable('igrejas');
+        $this->forge->dropTable('churches');
     }
 }
