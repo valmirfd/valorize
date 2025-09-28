@@ -1,5 +1,6 @@
 <?php
 
+use App\Controllers\Api\V1\ChurchesController;
 use App\Controllers\Api\V1\IgrejasController;
 use App\Controllers\Api\V1\LoginController;
 use App\Controllers\Api\V1\RegisterController;
@@ -24,6 +25,14 @@ $routes->group('api', ['namespace' => 'App\Controllers\API\V1'], static function
             $routes->post('create', [IgrejasController::class, 'create']);
             $routes->put('update/(:num)', [IgrejasController::class, 'update']);
             $routes->delete('destroy/(:num)', [IgrejasController::class, 'destroy']);
+        });
+
+        $routes->group('churches', ['namespace' => 'App\Controllers\API\V1'], static function ($routes) {
+            $routes->get('list', [ChurchesController::class, 'index']);
+            $routes->get('show/(:num)', [ChurchesController::class, 'show']);
+            $routes->post('create', [ChurchesController::class, 'create']);
+            $routes->put('update/(:num)', [ChurchesController::class, 'update']);
+            $routes->delete('destroy/(:num)', [ChurchesController::class, 'destroy']);
         });
     });
 });

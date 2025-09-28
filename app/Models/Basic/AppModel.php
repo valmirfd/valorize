@@ -46,6 +46,12 @@ abstract class AppModel extends Model
         return $this;
     }
 
+    public function whereSuper(): self
+    {
+        $this->where("{$this->table}.superintendente_id", auth()->id());
+        return $this;
+    }
+
     protected function setCode(array $data): array
     {
         if (!isset($data['data'])) {
