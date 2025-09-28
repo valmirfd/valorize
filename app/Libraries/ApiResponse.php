@@ -22,9 +22,10 @@ class ApiResponse
         }
     }
 
-    public function set_response($status = 200, $message = 'success', $data = [])
+    public function set_response($status = 200, $message = 'success', $data = [], $user_id = null)
     {
         // api generic success response
+        response()->setContentType('application/json');
         return json_encode(
             [
                 'status' => $status,
@@ -32,17 +33,19 @@ class ApiResponse
                 'info' => [
                     'version' => API_VERSION,
                     'datetime' => date('Y-m-d H:i:s'),
-                    'timestamp' => time()
+                    'timestamp' => time(),
+                    'user_id' => $user_id
                 ],
-                'data' => $data,
+                'data' => $data
             ],
             JSON_PRETTY_PRINT
         );
     }
 
-    public function set_response_error($status = 404, $message = 'error', $errors = [])
+    public function set_response_error($status = 404, $message = 'error', $user_id = null)
     {
         // api generic error response
+        response()->setContentType('application/json');
         return json_encode(
             [
                 'status' => $status,
@@ -50,9 +53,10 @@ class ApiResponse
                 'info' => [
                     'version' => API_VERSION,
                     'datetime' => date('Y-m-d H:i:s'),
-                    'timestamp' => time()
+                    'timestamp' => time(),
+                    'user_id' => $user_id
                 ],
-                'errors' => $errors
+                //'data' => []
             ],
             JSON_PRETTY_PRINT
         );
@@ -60,14 +64,16 @@ class ApiResponse
 
     private function _api_not_active()
     {
+        response()->setContentType('application/json');
         return json_encode(
             [
-                'status' => 400,
+                'status' => 404,
                 'message' => 'API is not active',
                 'info' => [
                     'version' => API_VERSION,
                     'datetime' => date('Y-m-d H:i:s'),
-                    'timestamp' => time()
+                    'timestamp' => time(),
+                    'user_id' => null
                 ],
                 'data' => []
             ],
