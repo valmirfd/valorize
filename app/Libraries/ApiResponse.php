@@ -42,7 +42,7 @@ class ApiResponse
         );
     }
 
-    public function set_response_error($status = 404, $message = 'error', $user_id = null)
+    public function set_response_error($status = 404, $message = 'error', $data = [], $user_id = null)
     {
         // api generic error response
         response()->setContentType('application/json');
@@ -56,7 +56,7 @@ class ApiResponse
                     'timestamp' => time(),
                     'user_id' => $user_id
                 ],
-                //'data' => []
+                'data' => $data
             ],
             JSON_PRETTY_PRINT
         );

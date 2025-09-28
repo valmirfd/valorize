@@ -8,6 +8,7 @@ use App\Entities\Church;
 use App\Validations\AddressValidation;
 use App\Validations\ChurchValidation;
 use App\Libraries\ApiResponse;
+use App\Models\ChurchModel;
 use App\Services\ChurchService;
 use CodeIgniter\Config\Factories;
 
@@ -29,28 +30,13 @@ class ChurchesController extends BaseController
     public function index(): string|false
     {
         $this->resposta->validate_request('get');
-        $data = $this->churchService->getChurchesForUserAPI(withAddress: true);
+        $churches = $this->churchService->getChurchesForUserAPI(withAddress: true);
 
-        return $this->resposta->set_response(
-            status: 200,
-            message: 'success',
-            data: $data,
-            user_id: $this->user->id
-        );
-    }
-
-    public function show($id = null)
-    {
-        $this->resposta->validate_request('get');
-
-        $data = [];
-
-        $church = $this->churchService->getByID(churchID: $id, withAddress: true);
-
-        if ($church === []) {
-            return $this->resposta->set_response_error(
-                status: 404,
-                message: 'not found',
+        if ($churches === null) {
+            return $this->resposta->set_response(
+                status: 200,
+                message: 'success',
+                data: ['info' => 'Nenhuma Igreja foi cadastrada ainda'],
                 user_id: $this->user->id
             );
         }
@@ -58,16 +44,53 @@ class ChurchesController extends BaseController
         return $this->resposta->set_response(
             status: 200,
             message: 'success',
+            data: $churches,
+            user_id: $this->user->id
+        );
+    }
+
+    public function show($id = null)
+    {
+        $this->resposta->validate_request('get');
+        $data = [];
+
+
+        $church = $this->churchService->getByID(churchID: $id, withAddress: true);
+
+        if ($church === null) {
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'not found',
+                data: [],
+                user_id: $this->user->id
+            );
+        }
+
+        $data[] = $church;
+
+        return $this->resposta->set_response(
+            status: 200,
+            message: 'success',
             data: $data,
             user_id: $this->user->id
         );
     }
 
-    /*public function create()
+    public function create()
     {
+        $this->resposta->validate_request('post');
+        $data = [];
+
         $rules = (new ChurchValidation)->getRules();
         if (!$this->validate($rules)) {
-            return $this->failValidationErrors($this->validator->getErrors());
+            $data[] = $this->validator->getErrors();
+
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'error',
+                data: $data,
+                user_id: $this->user->id
+            );
         }
 
         $church = new Church($this->validator->getValidated());
@@ -75,29 +98,45 @@ class ChurchesController extends BaseController
         //Valida os dados de endereço vindos do post
         $rules = (new AddressValidation)->getRules();
         if (!$this->validate($rules)) {
-            return $this->failValidationErrors($this->validator->getErrors());
+            $data[] = $this->validator->getErrors();
+
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'error',
+                data: $data,
+                user_id: $this->user->id
+            );
         }
 
         //instanciamos o endereço com os dados validados
         $address = new Address($this->validator->getValidated());
 
-        $success = $this->churchModel->store(church: $church, address: $address);
+        $success = $this->churchService->store(church: $church, address: $address);
 
         //Se não foi salvo, retorna uma mensagem de erro
         if (!$success) {
-            return $this->respond(data: ['info' => 'Erro ao salvar Church'], status: 401, message: 'error');
+            return $this->resposta->set_response_error(
+                status: 501,
+                message: 'error',
+                data: ['info' => 'Opss! Algo deu errado tente novamente.'],
+                user_id: $this->user->id
+            );
         }
 
-        $data = [];
+         $data = [];
 
-        $id = $this->churchModel->getInsertID();
+        $id = model(ChurchModel::class)->getInsertID();
 
-        $data[] = $this->churchModel->getByID(churchID: $id, withAddress: true);
-
-
-        return $this->respondCreated(data: $data);
+        $data[] = $this->churchService->getByID(churchID: $id, withAddress: true);
+        return $this->resposta->set_response(
+            status: 200,
+            message: 'success',
+            data: $data,
+            user_id: $this->user->id
+        );
     }
 
+    /*
     public function update($id = null)
     {
         $church = $this->churchModel->getByID(churchID: $id, withAddress: true);

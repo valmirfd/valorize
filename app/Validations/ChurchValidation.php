@@ -11,7 +11,7 @@ class ChurchValidation
                 'rules' => 'permit_empty|is_natural_no_zero'
             ],
             'nome' => [
-                'rules' => "required|min_length[3]|max_length[128]|is_unique[church.nome,id,{$id}]",
+                'rules' => "required|min_length[3]|max_length[128]|is_unique[churches.nome,id,{$id}]",
                 'errors' => [
                     'required' => 'Informe o nome da Igreja',
                     'min_length' => 'O nome deve ter no minimo 3 caractéres',
@@ -20,7 +20,7 @@ class ChurchValidation
                 ],
             ],
             'telefone' => [
-                'rules' => "required|validate_phone|exact_length[15]|is_unique[church.telefone,id,{$id}]",
+                'rules' => "required|validate_phone|exact_length[15]|is_unique[churches.telefone,id,{$id}]",
                 'errors' => [
                     'required' => 'O campo Telefone é obrigatório.',
                     'exact_length' => 'O telefone deve ter exatamente 15 caractéres. Ex.: (00) 98888-8888',
@@ -28,7 +28,7 @@ class ChurchValidation
                 ],
             ],
             'cnpj' => [
-                'rules' => "required|exact_length[18]|validate_cnpj|is_unique[church.cnpj,id,{$id}]",
+                'rules' => "required|exact_length[18]|validate_cnpj|is_unique[churches.cnpj,id,{$id}]",
                 'errors' => [
                     'required' => 'O campo CNPJ é obrigatório. Informe um CPF válido.',
                     'exact_length' => 'O CNPJ deve ter exatamente 18 caractéres. ex.: 00.000.000/0000-00',

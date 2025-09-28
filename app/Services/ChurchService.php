@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Entities\Address;
+use App\Entities\Church;
 use App\Models\ChurchModel;
 
 class ChurchService
@@ -68,10 +70,25 @@ class ChurchService
     ): array|object|null {
         $church = $this->churchModel->getByID(churchID: $churchID, withAddress: $withAddress);
 
-        if (empty($churches)) {
-            return [];
+        if (empty($church)) {
+            return null;
         }
 
         return $church;
+    }
+
+    /**
+     * Retorna o último ID inserido na tabela churches
+     *
+     * @return integer
+     */
+    public function getLastID(): int
+    {
+        return $this->churchModel->getLastID();
+    }
+
+    public function store(Church $church, Address $address): bool
+    {
+        return $this->churchModel->store(church: $church, address: $address);
     }
 }

@@ -83,10 +83,11 @@ class ChurchModel extends AppModel
 
     public function getByID(
         string|null $churchID,
-        bool $withAddress = true,
+        bool $withAddress = false
 
     ) {
-        $church = $this->where(['id' => $churchID])->where('superintendente_id', $this->user->id)->first();
+        //$church = $this->where(['id' => $churchID])->where('superintendente_id', $this->user->id)->first();
+        $church = $this->where(['id' => $churchID])->first();
 
         if ($church === null) {
             return null;
@@ -120,6 +121,11 @@ class ChurchModel extends AppModel
             log_message('error', "Erro ao salvar Church {$th->getMessage()}");
             return false;
         }
+    }
+
+    public function getLastID(): int
+    {
+        return $this->getInsertID();
     }
 
     public function destroy(Church $church): bool
