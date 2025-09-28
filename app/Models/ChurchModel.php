@@ -20,7 +20,7 @@ class ChurchModel extends AppModel
     protected $table            = 'igrejas';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'object';
+    protected $returnType       = Church::class;
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
@@ -118,6 +118,28 @@ class ChurchModel extends AppModel
             return $this->db->transStatus();
         } catch (\Throwable $th) {
             log_message('error', "Erro ao salvar Church {$th->getMessage()}");
+            return false;
+        }
+    }
+
+    public function destroy(Church $church): bool
+    {
+        try {
+
+            //Iniciamos a transaction
+            $this->db->transException(true)->transStart();
+
+            $this->delete($church->id);
+
+            model(AddressModel::class)->delete($church->address_id);
+
+            //Finalizamos a transaction
+            $this->db->transComplete();
+
+            //Retorna o status da transaction (true or false)
+            return $this->db->transStatus();
+        } catch (\Throwable $th) {
+            log_message('error', "Erro ao excluir Church {$th->getMessage()}");
             return false;
         }
     }

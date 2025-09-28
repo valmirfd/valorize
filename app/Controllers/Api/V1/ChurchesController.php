@@ -7,7 +7,7 @@ use App\Entities\Address;
 use App\Entities\Church;
 use App\Models\ChurchModel;
 use App\Validations\AddressValidation;
-use App\Validations\IgrejaValidation;
+use App\Validations\ChurchValidation;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\API\ResponseTrait;
 
@@ -46,7 +46,7 @@ class ChurchesController extends BaseController
 
     public function create()
     {
-        $rules = (new IgrejaValidation)->getRules();
+        $rules = (new ChurchValidation)->getRules();
         if (!$this->validate($rules)) {
             return $this->failValidationErrors($this->validator->getErrors());
         }
@@ -77,5 +77,65 @@ class ChurchesController extends BaseController
 
 
         return $this->respondCreated(data: $data);
+    }
+
+    public function update($id = null)
+    {
+        $church = $this->churchModel->getByID(churchID: $id, withAddress: true);
+        $data = [];
+
+        if ($church === null) {
+            return $this->failNotFound(code: ResponseInterface::HTTP_NOT_FOUND);
+        }
+
+        $rules = (new ChurchValidation)->getRules($church->id);
+        if (!$this->validate($rules)) {
+            return $this->failValidationErrors($this->validator->getErrors());
+        }
+
+        $church->fill($this->validator->getValidated());
+
+
+        $rules = (new AddressValidation)->getRules();
+        if (!$this->validate($rules)) {
+            return $this->failValidationErrors($this->validator->getErrors());
+        }
+
+        //Recuparamos o endereço associado
+        $address = $church->address;
+
+        $address->fill($this->validator->getValidated());
+
+        $success = $this->churchModel->store(church: $church, address: $address);
+
+        //Se não foi salvo, retorna uma mensagem de erro
+        if (!$success) {
+            return $this->respond(data: ['info' => 'Erro ao salvar Church'], status: 401, message: 'error');
+        }
+
+        $church = $this->churchModel->getByID(churchID: $church->id, withAddress: true);
+
+        $data[] = $church;
+
+        return $this->respondUpdated(data: $data);
+    }
+
+    public function destroy($id = null)
+    {
+        $church = $this->churchModel->getByID(churchID: $id);
+        $data = [];
+
+        if ($church === null) {
+            return $this->failNotFound(code: ResponseInterface::HTTP_NOT_FOUND);
+        }
+
+        $success = $this->churchModel->destroy($church);
+        if (!$success) {
+            return $this->respond(data: ['info' => 'Erro ao excluir Church'], status: 401, message: 'error');
+        }
+
+        $data[] = $church;
+
+        return $this->respondDeleted(data: $data);
     }
 }

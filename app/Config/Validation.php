@@ -2,6 +2,7 @@
 
 namespace Config;
 
+use App\Validations\ChurchValidation;
 use App\Validations\Customized;
 use App\Validations\IgrejaValidation;
 use CodeIgniter\Config\BaseConfig;
@@ -28,7 +29,8 @@ class Validation extends BaseConfig
         FileRules::class,
         CreditCardRules::class,
         Customized::class, // nossas validações
-        IgrejaValidation::class,
+        IgrejaValidation::class, // nossas validações
+        ChurchValidation::class, // nossas validações
     ];
 
     /**
