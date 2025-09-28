@@ -19,14 +19,6 @@ $routes->group('api', ['namespace' => 'App\Controllers\API\V1'], static function
 
     $routes->group('', ['filter' => 'jwt'], static function ($routes) {
 
-        $routes->group('igrejas', ['namespace' => 'App\Controllers\API\V1'], static function ($routes) {
-            $routes->get('list', [IgrejasController::class, 'index']);
-            $routes->get('show/(:num)', [IgrejasController::class, 'show']);
-            $routes->post('create', [IgrejasController::class, 'create']);
-            $routes->put('update/(:num)', [IgrejasController::class, 'update']);
-            $routes->delete('destroy/(:num)', [IgrejasController::class, 'destroy']);
-        });
-
         $routes->group('churches', ['namespace' => 'App\Controllers\API\V1'], static function ($routes) {
             $routes->get('list', [ChurchesController::class, 'index']);
             $routes->get('show/(:num)', [ChurchesController::class, 'show']);

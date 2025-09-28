@@ -2,7 +2,7 @@
 
 namespace App\Validations;
 
-class IgrejaImageValidation
+class ChurchImageValidation
 {
     public function getRules(): array
     {
