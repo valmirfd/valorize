@@ -87,11 +87,24 @@ class ChurchService
         return $this->churchModel->getLastID();
     }
 
+    /**
+     * Método responsável tanto para salvar uma Church com para editar
+     *
+     * @param Church $church
+     * @param Address $address
+     * @return boolean
+     */
     public function store(Church $church, Address $address): bool
     {
         return $this->churchModel->store(church: $church, address: $address);
     }
 
+    /**
+     * Método responsável em excluir uma Church do banco de dados
+     *
+     * @param Church $church
+     * @return boolean
+     */ 
     public function destroy(Church $church): bool
     {
         return $this->churchModel->destroy(church: $church);

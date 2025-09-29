@@ -8,7 +8,6 @@ use App\Entities\Church;
 use App\Validations\AddressValidation;
 use App\Validations\ChurchValidation;
 use App\Libraries\ApiResponse;
-use App\Models\ChurchModel;
 use App\Services\ChurchService;
 use CodeIgniter\Config\Factories;
 
