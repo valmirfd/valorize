@@ -85,7 +85,22 @@ class ChurchService
      */
     public function destroy(Church $church): bool
     {
-        return $this->churchModel->destroy(church: $church);
+
+        $images = $church->images;
+
+        if ($this->churchModel->destroy(church: $church)) {
+
+            if ($images !== null) {
+                foreach ($images as $image) {
+                    $data = $image->image;
+                    ImageService::destroyImage('churches', $data);
+                }
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function salvarImagem(array $images, int $churchID)

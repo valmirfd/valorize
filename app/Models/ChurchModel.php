@@ -137,12 +137,27 @@ class ChurchModel extends AppModel
     {
         try {
 
+            // recupero apenas os adverts_id da tabela de imagens
+            //$advertsIDS = array_column($this->db->table('adverts_images')->select('advert_id')->get()->getResultArray(), 'advert_id');
+            //$builder->whereIn('adverts.id', $advertsIDS); // apenas em anúncios que possuem imagem
+
+            /*$imagesIDS = array_column($this->db->table('churches_images')->select('church_id', 'image')->get()->getResultArray(), 'church_id');
+            */
+
+           
+
+
+
             //Iniciamos a transaction
             $this->db->transException(true)->transStart();
 
             $this->delete($church->id);
 
             model(AddressModel::class)->delete($church->address_id);
+
+            /*foreach ($imagesIDS as $imageID) {
+                $this->db->table('churches_images')->where($imageID)->delete();
+            }*/
 
             //Finalizamos a transaction
             $this->db->transComplete();

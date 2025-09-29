@@ -14,6 +14,7 @@ class ChurchesImagesController extends BaseController
     private ApiResponse $resposta;
     private ChurchService $churchService;
     private $user;
+    
 
     public function __construct()
     {
@@ -53,7 +54,7 @@ class ChurchesImagesController extends BaseController
 
         $this->churchService->salvarImagem($this->request->getFiles('images'), $church->id);
 
-        $church = $this->churchService->getByID(churchID: $church->id, withAddress: false);
+        $church = $this->churchService->getByID(churchID: $church->id, withAddress: false, withImages: true);
 
         return $this->resposta->set_response(
             status: 200,

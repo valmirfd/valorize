@@ -210,7 +210,7 @@ class ChurchesController extends BaseController
         $this->resposta->validate_request('delete');
         $data = [];
 
-        $church = $this->churchService->getByID(churchID: $id, withAddress: false);
+        $church = $this->churchService->getByID(churchID: $id, withAddress: false, withImages: true);
 
         if ($church === null) {
             return $this->resposta->set_response_error(
