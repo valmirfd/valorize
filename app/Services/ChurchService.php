@@ -124,4 +124,19 @@ class ChurchService
             die('Error saving data');
         }
     }
+
+    public function deleteImage(int $churchID, string $image)
+    {
+        try {
+
+            $church = $this->getByID(churchID: $churchID, withAddress: false);
+
+            $this->churchModel->deleteImage($church->id, $image);
+
+            ImageService::destroyImage('churches', $image);
+        } catch (\Exception $e) {
+            log_message('error', "Erro ao deletar image {$e->getMessage()}");
+            die('Error deleting data');
+        }
+    }
 }

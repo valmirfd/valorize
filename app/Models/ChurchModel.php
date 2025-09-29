@@ -163,6 +163,23 @@ class ChurchModel extends AppModel
         }
     }
 
+    /**
+     * Método responsável em excluir uma imagem no banco de dados de acordo o o ID da Church e o nome da Image
+     *
+     * @param integer $churchID
+     * @param string $image
+     * @return boolean
+     */
+    public function deleteImage(int $churchID, string $image):bool
+    {
+        $criteria = [
+            'church_id' => $churchID,
+            'image'     => $image
+        ];
+
+        return $this->db->table('churches_images')->where($criteria)->delete();
+    }
+
 
 
 

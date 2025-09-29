@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Libraries\ApiResponse;
 use App\Services\ChurchService;
+use App\Services\ImageService;
 use App\Validations\ChurchImageValidation;
 use CodeIgniter\Config\Factories;
 
@@ -59,6 +60,27 @@ class ChurchesImagesController extends BaseController
             status: 200,
             message: 'success',
             data: $church,
+            user_id: $this->user->id
+        );
+    }
+
+    public function imageChurch(string|null $image = null, string $sizeImage = 'regular')
+    {
+        ImageService::showImage('churches', $image, $sizeImage);
+    }
+
+    public function deleteImageChurch(string|null $image = null)
+    {
+        $this->resposta->validate_request('delete');
+
+        $result = $this->request->getJSON(assoc: true);
+
+        $this->churchService->deleteImage($result['church_id'], $image);
+
+        return $this->resposta->set_response(
+            status: 200,
+            message: 'success',
+            data: [],
             user_id: $this->user->id
         );
     }
