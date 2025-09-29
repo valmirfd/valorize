@@ -29,31 +29,7 @@ class ChurchService
             return null;
         }
 
-        $data = [];
-
-        foreach ($churches as $church) {
-
-            $data[] = [
-                'id' => $church->id,
-                'nome' => $church->nome,
-                'telefone' => $church->telefone,
-                'cnpj' => $church->cnpj,
-                'code' => $church->code,
-                'situacao' => $church->situacao,
-                'ativo' => $church->ativo,
-                'user_id' => $church->user_id,
-                'is_sede' => $church->is_sede,
-                'address_id' => $church->address_id,
-                'titular_id' => $church->titular_id,
-                'superintendente_id' => $church->superintendente_id,
-                'images' => $church->image(),
-                'created_at' => $church->created_at,
-                'updated_at' => $church->updated_at,
-                'address' => $church->address,
-            ];
-        }
-
-        return $data;
+        return $churches;
     }
 
     /**
