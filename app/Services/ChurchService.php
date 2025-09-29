@@ -104,9 +104,24 @@ class ChurchService
      *
      * @param Church $church
      * @return boolean
-     */ 
+     */
     public function destroy(Church $church): bool
     {
         return $this->churchModel->destroy(church: $church);
+    }
+
+    public function salvarImagem(array $images, int $churchID)
+    {
+        try {
+
+            $church = $this->getByID(churchID: $churchID, withAddress: false);
+
+            $dataImages = ImageService::storeImages($images, 'churches', 'church_id', $church->id);
+
+            $this->churchModel->salvarImagem($dataImages, $church->id);
+        } catch (\Exception $e) {
+            log_message('error', "Erro ao salvar image {$e->getMessage()}");
+            die('Error saving data');
+        }
     }
 }

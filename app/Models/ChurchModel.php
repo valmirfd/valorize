@@ -150,6 +150,19 @@ class ChurchModel extends AppModel
         }
     }
 
+    public function salvarImagem(array $dataImages)
+    {
+
+        try {
+            $this->db->transStart();
+            $this->db->table('churches_images')->insertBatch($dataImages);
+            $this->db->transComplete();
+        } catch (\Exception $e) {
+            log_message('error', "Erro ao salvar image {$e->getMessage()}");
+            die('Error saving data');
+        }
+    }
+
 
 
 

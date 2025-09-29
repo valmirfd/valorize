@@ -57,12 +57,12 @@ class Church extends Entity
 
         if (url_is('api/churches*')) {
 
-            return site_url('images/no_image.png');
+            return site_url('assets/images/no_image.png');
         }
 
         return img(
             [
-                'src'       => site_url('web/images/no_image.png'),
+                'src'       => site_url('assets/images/no_image.png'),
                 'alt'       => 'No image yet',
                 'name'     => 'No image yet',
                 'class'     => $classImage,

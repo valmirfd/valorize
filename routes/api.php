@@ -28,8 +28,8 @@ $routes->group('api', ['namespace' => 'App\Controllers\API\V1'], static function
             $routes->options('', static function () {});
             $routes->options('(:any)', static function () {});
             //Images
-            $routes->get('upload', [ChurchesImagesController::class, 'upload']);
-            $routes->options('upload', static function () {});
+            $routes->post('upload/(:num)', [ChurchesImagesController::class, 'upload']);
+            //$routes->options('upload', static function () {});
             $routes->options('upload/(:any)', static function () {});
         });
     });
