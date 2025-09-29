@@ -91,4 +91,9 @@ class ChurchService
     {
         return $this->churchModel->store(church: $church, address: $address);
     }
+
+    public function destroy(Church $church): bool
+    {
+        return $this->churchModel->destroy(church: $church);
+    }
 }

@@ -87,7 +87,7 @@ class ChurchModel extends AppModel
 
     ) {
         //$church = $this->where(['id' => $churchID])->where('superintendente_id', $this->user->id)->first();
-        $church = $this->where(['id' => $churchID])->first();
+        $church = $this->where(['id' => $churchID])->where(['superintendente_id' => $this->user->id])->first();
 
         if ($church === null) {
             return null;

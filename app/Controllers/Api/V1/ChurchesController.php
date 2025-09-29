@@ -61,7 +61,7 @@ class ChurchesController extends BaseController
             return $this->resposta->set_response_error(
                 status: 404,
                 message: 'not found',
-                data: [],
+                data: ['info' => 'Não há dados para exibir'],
                 user_id: $this->user->id
             );
         }
@@ -123,9 +123,9 @@ class ChurchesController extends BaseController
             );
         }
 
-         $data = [];
+        $data = [];
 
-        $id = model(ChurchModel::class)->getInsertID();
+        $id = $this->churchService->getLastID();
 
         $data[] = $this->churchService->getByID(churchID: $id, withAddress: true);
         return $this->resposta->set_response(
@@ -136,19 +136,33 @@ class ChurchesController extends BaseController
         );
     }
 
-    /*
+
     public function update($id = null)
     {
-        $church = $this->churchModel->getByID(churchID: $id, withAddress: true);
+        $this->resposta->validate_request('put');
         $data = [];
 
+        $church = $this->churchService->getByID(churchID: $id, withAddress: true);
+
         if ($church === null) {
-            return $this->failNotFound(code: ResponseInterface::HTTP_NOT_FOUND);
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'not found',
+                data: ['info' => 'Não há dados para exibir'],
+                user_id: $this->user->id
+            );
         }
 
         $rules = (new ChurchValidation)->getRules($church->id);
         if (!$this->validate($rules)) {
-            return $this->failValidationErrors($this->validator->getErrors());
+            $data[] = $this->validator->getErrors();
+
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'error',
+                data: $data,
+                user_id: $this->user->id
+            );
         }
 
         $church->fill($this->validator->getValidated());
@@ -156,7 +170,12 @@ class ChurchesController extends BaseController
 
         $rules = (new AddressValidation)->getRules();
         if (!$this->validate($rules)) {
-            return $this->failValidationErrors($this->validator->getErrors());
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'error',
+                data: $data,
+                user_id: $this->user->id
+            );
         }
 
         //Recuparamos o endereço associado
@@ -164,36 +183,65 @@ class ChurchesController extends BaseController
 
         $address->fill($this->validator->getValidated());
 
-        $success = $this->churchModel->store(church: $church, address: $address);
+        $success = $this->churchService->store(church: $church, address: $address);
+
 
         //Se não foi salvo, retorna uma mensagem de erro
         if (!$success) {
-            return $this->respond(data: ['info' => 'Erro ao salvar Church'], status: 401, message: 'error');
+            return $this->resposta->set_response_error(
+                status: 501,
+                message: 'error',
+                data: ['info' => 'Opss! Algo deu errado tente novamente.'],
+                user_id: $this->user->id
+            );
         }
 
-        $church = $this->churchModel->getByID(churchID: $church->id, withAddress: true);
+        $church = $this->churchService->getByID(churchID: $church->id, withAddress: true);
 
         $data[] = $church;
 
-        return $this->respondUpdated(data: $data);
+        return $this->resposta->set_response(
+            status: 200,
+            message: 'success',
+            data: $data,
+            user_id: $this->user->id
+        );
     }
+
 
     public function destroy($id = null)
     {
-        $church = $this->churchModel->getByID(churchID: $id);
+        $this->resposta->validate_request('delete');
         $data = [];
 
+        $church = $this->churchService->getByID(churchID: $id, withAddress: false);
+
         if ($church === null) {
-            return $this->failNotFound(code: ResponseInterface::HTTP_NOT_FOUND);
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'not found',
+                data: ['info' => 'Não há dados para exibir'],
+                user_id: $this->user->id
+            );
         }
 
-        $success = $this->churchModel->destroy($church);
+        $success = $this->churchService->destroy($church);
         if (!$success) {
-            return $this->respond(data: ['info' => 'Erro ao excluir Church'], status: 401, message: 'error');
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'error',
+                data: ['info' => 'Opss! Aconteceu um erro na exclusão tente novamente'],
+                user_id: $this->user->id
+            );
         }
 
         $data[] = $church;
 
-        return $this->respondDeleted(data: $data);
-    }*/
+        return $this->resposta->set_response(
+            status: 200,
+            message: 'success',
+            data: $data,
+            user_id: $this->user->id
+        );
+    }
 }
