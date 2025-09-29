@@ -51,7 +51,6 @@ class ChurchesController extends BaseController
     public function show($id = null)
     {
         $this->resposta->validate_request('get');
-        $data = [];
 
 
         $church = $this->churchService->getByID(churchID: $id, withAddress: true, withImages: true);
@@ -65,12 +64,10 @@ class ChurchesController extends BaseController
             );
         }
 
-        $data[] = $church;
-
         return $this->resposta->set_response(
             status: 200,
             message: 'success',
-            data: $data,
+            data: $church,
             user_id: $this->user->id
         );
     }
