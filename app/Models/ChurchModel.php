@@ -83,7 +83,8 @@ class ChurchModel extends AppModel
 
     public function getByID(
         string|null $churchID,
-        bool $withAddress = false
+        bool $withAddress = false,
+        bool $withImages = false
 
     ) {
         //$church = $this->where(['id' => $churchID])->where('superintendente_id', $this->user->id)->first();
@@ -95,6 +96,10 @@ class ChurchModel extends AppModel
 
         if ($withAddress) {
             $church->address = model(AddressModel::class)->find($church->address_id);
+        }
+
+        if ($withImages) {
+            $church->images = $this->getImageChurch(churchID: $church->id);
         }
 
         return $church;
@@ -170,7 +175,7 @@ class ChurchModel extends AppModel
      * @param string $image
      * @return boolean
      */
-    public function deleteImage(int $churchID, string $image):bool
+    public function deleteImage(int $churchID, string $image): bool
     {
         $criteria = [
             'church_id' => $churchID,

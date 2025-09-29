@@ -61,14 +61,16 @@ class ChurchService
      *
      * @param string|null $churchID
      * @param boolean $withAddress
+     * @param boolean $withImages
      * @return array|object|null
      */
     public function getByID(
         string|null $churchID,
         bool $withAddress = true,
+        bool $withImages = false
 
     ): array|object|null {
-        $church = $this->churchModel->getByID(churchID: $churchID, withAddress: $withAddress);
+        $church = $this->churchModel->getByID(churchID: $churchID, withAddress: $withAddress, withImages: $withImages);
 
         if (empty($church)) {
             return null;

@@ -43,7 +43,7 @@ class Church extends Entity
             return $this->handleWithSingleImage($classImage, $sizeImage);
         }
 
-        if (url_is('api/igrejas*')) {
+        if (url_is('api/churches*')) {
 
             return $this->handleWithImagesForAPI();
         }
@@ -108,6 +108,7 @@ class Church extends Entity
 
     private function buildRouteForImageAPI(string $image): string
     {
-        return route_to('image.church', $image, 'small');
+        //return route_to('image.church', $image, 'small');
+        return site_url("image-church/$image/mall");
     }
 }

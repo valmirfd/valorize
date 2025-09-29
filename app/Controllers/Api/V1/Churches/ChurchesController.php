@@ -54,7 +54,7 @@ class ChurchesController extends BaseController
         $data = [];
 
 
-        $church = $this->churchService->getByID(churchID: $id, withAddress: true);
+        $church = $this->churchService->getByID(churchID: $id, withAddress: true, withImages: true);
 
         if ($church === null) {
             return $this->resposta->set_response_error(
