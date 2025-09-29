@@ -3,7 +3,6 @@
 namespace App\Controllers\Api\V1\Churches;
 
 use App\Controllers\BaseController;
-use CodeIgniter\HTTP\ResponseInterface;
 use App\Libraries\ApiResponse;
 use App\Services\ChurchService;
 use App\Services\ImageService;
@@ -69,7 +68,7 @@ class ChurchesImagesController extends BaseController
         ImageService::showImage('churches', $image, $sizeImage);
     }
 
-    public function deleteImageChurch(string|null $image = null)
+    public function deleteImageChurchOld(string|null $image = null)
     {
         $this->resposta->validate_request('delete');
 
@@ -81,6 +80,33 @@ class ChurchesImagesController extends BaseController
             status: 200,
             message: 'success',
             data: [],
+            user_id: $this->user->id
+        );
+    }
+
+    public function deleteImageChurch(int|null $id = null)
+    {
+        $this->resposta->validate_request('delete');
+
+        $church = $this->churchService->getByID(churchID: $id, withAddress: false);
+        if ($church === null) {
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'not found',
+                data: ['info' => 'Não há dados para exibir'],
+                user_id: $this->user->id
+            );
+        }
+
+        //Recebe o nome da image (name_image)
+        $result = $this->request->getJSON(assoc: true);
+
+        $this->churchService->deleteImage($church->id, $result['name_image']);
+
+        return $this->resposta->set_response(
+            status: 200,
+            message: 'success',
+            data: ['info' => 'Imagem deletada com sucesso'],
             user_id: $this->user->id
         );
     }

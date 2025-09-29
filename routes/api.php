@@ -30,7 +30,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\API\V1'], static function
             //Images
             $routes->get('image-church/(:any)/(:any)', [ChurchesImagesController::class, 'imageChurch']);
             $routes->post('upload/(:num)', [ChurchesImagesController::class, 'upload']);
-            $routes->delete('destroy-image/(:any)', [ChurchesImagesController::class, 'deleteImageChurch']);
+            $routes->delete('destroy-image/(:num)', [ChurchesImagesController::class, 'deleteImageChurch']);
             //$routes->options('upload', static function () {});
             $routes->options('upload/(:any)', static function () {});
             $routes->options('upload/(:any)/(:any)', static function () {});
