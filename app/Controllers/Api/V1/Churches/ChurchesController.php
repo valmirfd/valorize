@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\Api\V1;
+namespace App\Controllers\Api\V1\Churches;
 
 use App\Controllers\BaseController;
 use App\Entities\Address;
