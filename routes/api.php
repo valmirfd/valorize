@@ -4,6 +4,7 @@ use App\Controllers\Api\V1\Churches\ChurchesController;
 use App\Controllers\Api\V1\Churches\ChurchesImagesController;
 use App\Controllers\Api\V1\LoginController;
 use App\Controllers\Api\V1\RegisterController;
+use App\Controllers\Api\V1\UserController;
 
 $routes->group('api', ['namespace' => 'App\Controllers\API\V1'], static function ($routes) {
 
@@ -19,7 +20,13 @@ $routes->group('api', ['namespace' => 'App\Controllers\API\V1'], static function
 
     $routes->group('', ['filter' => 'jwt'], static function ($routes) {
 
-        $routes->group('churches', ['namespace' => 'App\Controllers\API\V1\Churches'], static function ($routes) {
+        $routes->group('users', ['namespace' => 'App\Controllers\Api\V1'], static function ($routes) {
+            $routes->get('user', [UserController::class, 'index']);
+            $routes->options('', static function () {});
+            $routes->options('(:any)', static function () {});
+        });
+
+        $routes->group('churches', ['namespace' => 'App\Controllers\Api\V1\Churches'], static function ($routes) {
             $routes->get('list', [ChurchesController::class, 'index']);
             $routes->get('show/(:num)', [ChurchesController::class, 'show']);
             $routes->post('create', [ChurchesController::class, 'create']);
