@@ -41,6 +41,7 @@ class AuthJWT extends ShieldAuthJWT
      */
     public array $defaultClaims = [
         'iss' => 'http://valorize.test/',
+        //'iss' => 'https://ieqpsj.com.br/',
         //'iss' => 'http://localhost:8080/',
     ];
 
