@@ -23,7 +23,7 @@ class ChurchService
      */
     public function getChurchesForUserAPI(bool $withAddress = false): array|null
     {
-        $churches = $this->churchModel->getChurchesForUserAPI(withAddress: $withAddress);
+        $churches = $this->churchModel->asObject()->getChurchesForUserAPI(withAddress: $withAddress);
 
         if (empty($churches)) {
             return null;
@@ -46,13 +46,16 @@ class ChurchService
         bool $withImages = false
 
     ): array|object|null {
-        $church = $this->churchModel->getByID(churchID: $churchID, withAddress: $withAddress, withImages: $withImages);
+        $data = [];
+        $church = $this->churchModel->asObject()->getByID(churchID: $churchID, withAddress: $withAddress, withImages: $withImages);
 
         if (empty($church)) {
             return null;
         }
 
-        return $church;
+        $data[] = $church;
+
+        return $data;
     }
 
     /**
