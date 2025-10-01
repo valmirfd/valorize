@@ -34,9 +34,9 @@ class CorsFilter implements FilterInterface
 
         $allowedOrigins = [
             'http://192.168.18.15:5173',
-            'http://192.168.18.26:5173',
-            'http://192.168.1.34:5173',
-            'http://192.168.18.5:5173',
+            //'http://192.168.18.26:5173',
+            //'http://192.168.1.34:5173',
+            //'http://192.168.18.5:5173',
         ];
 
         if (in_array($origin, $allowedOrigins)) {
