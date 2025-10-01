@@ -23,13 +23,39 @@ class ChurchService
      */
     public function getChurchesForUserAPI(bool $withAddress = false): array|null
     {
-        $churches = $this->churchModel->asObject()->getChurchesForUserAPI(withAddress: $withAddress);
+        
+        $churches = $this->churchModel->getChurchesForUserAPI(withAddress: $withAddress);
+
+        echo '<pre>';
+        print_r($churches);
+        exit;
+
+
+        $data = [];
 
         if (empty($churches)) {
             return null;
         }
 
-        return $churches;
+        foreach($churches as $church){
+            $data[] = [
+                'nome'       => $church->nome,
+                'telefone'   => $church->telefone,
+                'cnpj'       => $church->cnpj,
+                'code'       => $church->code,
+                'situacao'   => $church->situacao,
+                'titular_id' => $church->titular_id,
+                'is_sede'    => $church->is_sede,
+                'ativo'      => $church->ativo,
+                'user_id'    => $church->user_id,
+                'address_id' => $church->address_id,
+                'superintendente_id' => $church->superintendente_id,
+            ];
+        }
+
+         
+
+        return $data;
     }
 
     /**
@@ -47,7 +73,7 @@ class ChurchService
 
     ): array|object|null {
         $data = [];
-        $church = $this->churchModel->asObject()->getByID(churchID: $churchID, withAddress: $withAddress, withImages: $withImages);
+        $church = $this->churchModel->getByID(churchID: $churchID, withAddress: $withAddress, withImages: $withImages);
 
         if (empty($church)) {
             return null;
@@ -112,9 +138,9 @@ class ChurchService
 
             $church = $this->getByID(churchID: $churchID, withAddress: false);
 
-            $dataImages = ImageService::storeImages($images, 'churches', 'church_id', $church->id);
+            $dataImages = ImageService::storeImages($images, 'churches', 'church_id', $church[0]->id);
 
-            $this->churchModel->salvarImagem($dataImages, $church->id);
+            $this->churchModel->salvarImagem($dataImages, $church[0]->id);
         } catch (\Exception $e) {
             log_message('error', "Erro ao salvar image {$e->getMessage()}");
             die('Error saving data');

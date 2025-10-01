@@ -29,7 +29,8 @@ class ChurchesImagesController extends BaseController
         $data = [];
 
 
-        $church = $this->churchService->getByID(churchID: $id, withAddress: true);
+        $church = $this->churchService->getByID(churchID: $id, withAddress: false);
+      
 
         if ($church === null) {
             return $this->resposta->set_response_error(
@@ -52,9 +53,11 @@ class ChurchesImagesController extends BaseController
             );
         }
 
-        $this->churchService->salvarImagem($this->request->getFiles('images'), $church->id);
+        $this->churchService->salvarImagem($this->request->getFiles('images'), $church[0]->id);
 
-        $church = $this->churchService->getByID(churchID: $church->id, withAddress: false, withImages: true);
+        $church = $this->churchService->getByID(churchID: $id, withAddress: false);
+
+        //$church = $this->churchService->getByID(churchID: $church[0]->id, withAddress: false, withImages: true);
 
         return $this->resposta->set_response(
             status: 200,
