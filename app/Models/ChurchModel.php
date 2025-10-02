@@ -105,6 +105,43 @@ class ChurchModel extends AppModel
         return $church;
     }
 
+    public function buscaIgreja(
+        string|null $churchID,
+        bool $withAddress = false,
+        bool $withImages = false,
+        bool $withDeleted = false
+    ) {
+
+        $builder = $this;
+
+        $tableFields = [
+            'churches.*',
+
+        ];
+
+        $builder->select($tableFields);
+        $builder->withDeleted($withDeleted);
+        $builder->where('churches.id', $churchID);
+        $builder->where('churches.superintendente_id', $this->user->id);
+        $church = $builder->find($churchID);
+
+        // Foi encontrado uma church?
+        if (!is_null($church)) {
+
+            if ($withImages) {
+                $church->images = $this->getImageChurch($church->id);
+            }
+
+            if ($withAddress) {
+                $church->address = model(AddressModel::class)->find($church->address_id);
+            }
+        }
+
+        // Retornamos o anúncio que pode ou não ter imagens
+        return $church;
+    }
+
+
     public function store(Church $church, Address $address): bool
     {
         try {
@@ -144,7 +181,7 @@ class ChurchModel extends AppModel
             /*$imagesIDS = array_column($this->db->table('churches_images')->select('church_id', 'image')->get()->getResultArray(), 'church_id');
             */
 
-           
+
 
 
 

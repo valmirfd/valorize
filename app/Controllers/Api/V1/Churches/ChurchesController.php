@@ -55,6 +55,10 @@ class ChurchesController extends BaseController
 
         $church = $this->churchService->getByID(churchID: $id, withAddress: true, withImages: true);
 
+        echo '<pre>';
+        print_r($church);
+        exit;
+
         if ($church === null) {
             return $this->resposta->set_response_error(
                 status: 404,
