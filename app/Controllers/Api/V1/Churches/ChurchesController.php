@@ -33,7 +33,7 @@ class ChurchesController extends BaseController
         $this->resposta->validate_request('get');
         $churches = $this->churchModel->getChurchesForUserAPI(withAddress: true);
 
-        if ($churches === null) {
+        if ($churches === []) {
             return $this->resposta->set_response(
                 status: 200,
                 message: 'success',
@@ -57,6 +57,7 @@ class ChurchesController extends BaseController
         $data = [];
 
         $church = $this->churchModel->getByID(churchID: $id, withAddress: true, withImages: true);
+
 
         if ($church === null) {
             return $this->resposta->set_response_error(
@@ -251,7 +252,7 @@ class ChurchesController extends BaseController
         $this->resposta->validate_request('delete');
         $data = [];
 
-        $church = $this->churchService->getByID(churchID: $id, withAddress: false, withImages: true);
+        $church = $this->churchModel->getByID(churchID: $id, withAddress: true, withImages: true);
 
         if ($church === null) {
             return $this->resposta->set_response_error(
@@ -262,7 +263,7 @@ class ChurchesController extends BaseController
             );
         }
 
-        $success = $this->churchService->destroy($church);
+        $success = $this->churchModel->destroy($church);
         if (!$success) {
             return $this->resposta->set_response_error(
                 status: 404,
