@@ -36,7 +36,7 @@ class ChurchValidation
                 ],
             ],
             'situacao' => [
-                'rules' => "required",
+                'rules' => "required|in_list[sede,filial]",
                 'errors' => [
                     'required' => 'O campo Situação é obrigatório'
                 ],

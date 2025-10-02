@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Entities\Address;
-use App\Entities\Church;
 use App\Models\Basic\AppModel;
 
 
@@ -20,7 +18,7 @@ class ChurchModel extends AppModel
     protected $table            = 'churches';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = Church::class;
+    protected $returnType       = 'object';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
@@ -73,7 +71,7 @@ class ChurchModel extends AppModel
             foreach ($churches as $church) {
                 $church->images = $this->getImageChurch($church->id);
                 if ($withAddress) {
-                    $church->address = model(AddressModel::class)->asObject()->find($church->address_id);
+                    $church->address = model(AddressModel::class)->find($church->address_id);
                 }
             }
         }
@@ -87,40 +85,14 @@ class ChurchModel extends AppModel
         bool $withImages = false
 
     ) {
-        //$church = $this->where(['id' => $churchID])->where('superintendente_id', $this->user->id)->first();
-        $church = $this->where(['id' => $churchID])->where(['superintendente_id' => $this->user->id])->first();
-
-        if ($church === null) {
-            return null;
-        }
-
-        if ($withAddress) {
-            $church->address = model(AddressModel::class)->find($church->address_id);
-        }
-
-        if ($withImages) {
-            $church->images = $this->getImageChurch(churchID: $church->id);
-        }
-
-        return $church;
-    }
-
-    public function buscaIgreja(
-        string|null $churchID,
-        bool $withAddress = false,
-        bool $withImages = false,
-        bool $withDeleted = false
-    ) {
 
         $builder = $this;
 
         $tableFields = [
-            'churches.*',
-
+            'churches.*'
         ];
 
         $builder->select($tableFields);
-        $builder->withDeleted($withDeleted);
         $builder->where('churches.id', $churchID);
         $builder->where('churches.superintendente_id', $this->user->id);
         $church = $builder->find($churchID);
@@ -137,12 +109,11 @@ class ChurchModel extends AppModel
             }
         }
 
-        // Retornamos o anúncio que pode ou não ter imagens
         return $church;
     }
 
 
-    public function store(Church $church, Address $address): bool
+    public function store(object $church, object $address): bool
     {
         try {
 
@@ -170,7 +141,7 @@ class ChurchModel extends AppModel
         return $this->getInsertID();
     }
 
-    public function destroy(Church $church): bool
+    public function destroy(object $church): bool
     {
         try {
 
@@ -245,5 +216,10 @@ class ChurchModel extends AppModel
     private function getImageChurch(int $churchID): array
     {
         return $this->db->table('churches_images')->where('church_id', $churchID)->get()->getResult();
+    }
+
+    private function getAddress(int $address_id): array
+    {
+        return $this->db->table('addresses')->where('id', $address_id)->get()->getResult();
     }
 }

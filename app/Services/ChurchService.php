@@ -21,41 +21,12 @@ class ChurchService
      * @param boolean $withAddress
      * @return array|null
      */
-    public function getChurchesForUserAPI(bool $withAddress = false, string $sizeImage = 'small'): array|null
+    public function getChurchesForUserAPI(bool $withAddress = false): array|null
     {
 
         $churches = $this->churchModel->getChurchesForUserAPI(withAddress: $withAddress);
 
-        $data = [];
-
-        if (empty($churches)) {
-            return null;
-        }
-
-        //$address = new Address($church->address);
-
-        foreach ($churches as $church) {
-            $data[] = [
-                'id'         => $church->id,
-                'nome'       => $church->nome,
-                'telefone'   => $church->telefone,
-                'cnpj'       => $church->cnpj,
-                'code'       => $church->code,
-                'situacao'   => $church->situacao,
-                'titular_id' => $church->titular_id,
-                'is_sede'    => $church->is_sede,
-                'ativo'      => $church->ativo,
-                'user_id'    => $church->user_id,
-                'address_id' => $church->address_id,
-                'superintendente_id' => $church->superintendente_id,
-                'address'    => $church->address,
-                'image'      => $church->image(classImage: 'rounded-circle img-fluid', sizeImage: $sizeImage),
-            ];
-        }
-
-
-
-        return $data;
+        return $churches;
     }
 
     /**
@@ -69,35 +40,18 @@ class ChurchService
     public function getByID(
         string|null $churchID,
         bool $withAddress = false,
-        bool $withImages = false,
-        bool $withDeleted = false,
-        string $sizeImage = 'small'
-
+        bool $withImages = false
     ): array|object|null {
-        //$church = $this->churchModel->getByID(churchID: $churchID, withAddress: $withAddress, withImages: $withImages);
-        $church = $this->churchModel->buscaIgreja(churchID: $churchID, withAddress: $withAddress, withImages: $withImages, withDeleted: $withDeleted);
+
+        $church = $this->churchModel->getByID(churchID: $churchID, withAddress: $withAddress, withImages: $withImages);
 
 
-        $data = [];
+        if (is_null($church)) {
 
-        $data[] = [
-            'id'         => $church->id,
-            'nome'       => $church->nome,
-            'telefone'   => $church->telefone,
-            'cnpj'       => $church->cnpj,
-            'code'       => $church->code,
-            'situacao'   => $church->situacao,
-            'titular_id' => $church->titular_id,
-            'is_sede'    => $church->is_sede,
-            'ativo'      => $church->ativo,
-            'user_id'    => $church->user_id,
-            'address_id' => $church->address_id,
-            'superintendente_id' => $church->superintendente_id,
-            'address'    => $church->address,
-            'image'      => $church->image(classImage: 'rounded-circle img-fluid', sizeImage: $sizeImage),
-        ];
+            return null;
+        }
 
-        return $data;
+        return $church;
     }
 
     /**
@@ -108,6 +62,11 @@ class ChurchService
     public function getLastID(): int
     {
         return $this->churchModel->getLastID();
+    }
+
+    public function addChurch()
+    {
+        
     }
 
     /**
