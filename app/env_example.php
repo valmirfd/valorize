@@ -20,8 +20,8 @@ CI_ENVIRONMENT = development
 # APP
 #--------------------------------------------------------------------
 
-app.baseURL = 'https://ieqpsj.com.br/'
-# app.baseURL = 'http://localhost:8080/'
+# app.baseURL = 'https://ieqpsj.com.br/'
+app.baseURL = 'http://localhost:8080/'
 # app.baseURL = 'http://valorize.test/'
 # If you have trouble with `.`, you could also use `_`.
 # app_baseURL = ''
@@ -33,9 +33,12 @@ app.baseURL = 'https://ieqpsj.com.br/'
 #--------------------------------------------------------------------
 
 database.default.hostname = localhost
-database.default.database = valo3906_pizzaria_back
-database.default.username = valo3906_user_pizzaria
-database.default.password = user_valorize
+# database.default.database = valo3906_pizzaria_back
+# database.default.username = valo3906_user_pizzaria
+# database.default.password = user_valorize
+database.default.database = a_valorize_v2
+database.default.username = root
+database.default.password = 
 database.default.DBDriver = MySQLi
 database.default.DBPrefix =
 database.default.port = 3306

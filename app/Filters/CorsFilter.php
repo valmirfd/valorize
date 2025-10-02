@@ -33,8 +33,8 @@ class CorsFilter implements FilterInterface
         $origin = $request->getHeaderLine('Origin');
 
         $allowedOrigins = [
-            'http://192.168.18.15:5173',
-            //'http://192.168.18.26:5173',
+            'http://192.168.18.15:5173', //Windows - Lucas
+            'http://192.168.18.26:5173', //Ubuntu - Mãe
             //'http://192.168.1.34:5173',
             //'http://192.168.18.5:5173',
         ];
