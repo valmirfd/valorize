@@ -16,14 +16,13 @@ class ChurchesController extends BaseController
 {
 
     private ApiResponse $resposta;
-    private ChurchService $churchService;
+
     private ChurchModel $churchModel;
     private $user;
 
     public function __construct()
     {
         $this->resposta = Factories::class(ApiResponse::class);
-        $this->churchService = Factories::class(ChurchService::class);
         $this->user = auth()->user();
         $this->churchModel = model(ChurchModel::class);
     }

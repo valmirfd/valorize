@@ -4,6 +4,7 @@ namespace App\Controllers\Api\V1\Churches;
 
 use App\Controllers\BaseController;
 use App\Libraries\ApiResponse;
+use App\Models\ChurchModel;
 use App\Services\ChurchService;
 use App\Services\ImageService;
 use App\Validations\ChurchImageValidation;
@@ -12,14 +13,14 @@ use CodeIgniter\Config\Factories;
 class ChurchesImagesController extends BaseController
 {
     private ApiResponse $resposta;
-    private ChurchService $churchService;
+    private ChurchModel $churchModel;
     private $user;
-    
+
 
     public function __construct()
     {
         $this->resposta = Factories::class(ApiResponse::class);
-        $this->churchService = Factories::class(ChurchService::class);
+        $this->churchModel = model(ChurchModel::class);
         $this->user = auth()->user();
     }
 
@@ -29,10 +30,10 @@ class ChurchesImagesController extends BaseController
         $data = [];
 
 
-        $church = $this->churchService->getByID(churchID: $id, withAddress: false);
-      
+        $church = $this->churchModel->getByID(churchID: $id, withAddress: false);
 
-        if ($church === null) {
+
+        if ($church === []) {
             return $this->resposta->set_response_error(
                 status: 404,
                 message: 'not found',
@@ -53,9 +54,15 @@ class ChurchesImagesController extends BaseController
             );
         }
 
-        $this->churchService->salvarImagem($this->request->getFiles('images'), $church[0]->id);
+        $images = $this->request->getFiles('images');
 
-        $church = $this->churchService->getByID(churchID: $id, withAddress: false);
+
+
+        $dataImages = ImageService::storeImages($images, 'churches', 'church_id', $church->id);
+
+        $this->churchModel->salvarImagem($dataImages, $church->id);
+
+        $church = $this->churchModel->getByID(churchID: $id, withAddress: false);
 
         //$church = $this->churchService->getByID(churchID: $church[0]->id, withAddress: false, withImages: true);
 
@@ -78,7 +85,7 @@ class ChurchesImagesController extends BaseController
 
         $result = $this->request->getJSON(assoc: true);
 
-        $this->churchService->deleteImage($result['church_id'], $image);
+        $this->churchModel->deleteImage($result['church_id'], $image);
 
         return $this->resposta->set_response(
             status: 200,
@@ -92,7 +99,7 @@ class ChurchesImagesController extends BaseController
     {
         $this->resposta->validate_request('delete');
 
-        $church = $this->churchService->getByID(churchID: $id, withAddress: false);
+        $church = $this->churchModel->getByID(churchID: $id, withAddress: false);
         if ($church === null) {
             return $this->resposta->set_response_error(
                 status: 404,
@@ -105,7 +112,7 @@ class ChurchesImagesController extends BaseController
         //Recebe o nome da image (name_image)
         $result = $this->request->getJSON(assoc: true);
 
-        $this->churchService->deleteImage($church->id, $result['name_image']);
+        $this->churchModel->deleteImage($church->id, $result['name_image']);
 
         return $this->resposta->set_response(
             status: 200,
