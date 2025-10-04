@@ -14,12 +14,14 @@ class ChurchesImagesController extends BaseController
 {
     private ApiResponse $resposta;
     private ChurchModel $churchModel;
+    private ChurchService $churchService;
     private $user;
 
 
     public function __construct()
     {
         $this->resposta = Factories::class(ApiResponse::class);
+        $this->churchService = Factories::class(ChurchService::class);
         $this->churchModel = model(ChurchModel::class);
         $this->user = auth()->user();
     }
@@ -30,7 +32,7 @@ class ChurchesImagesController extends BaseController
         $data = [];
 
 
-        $church = $this->churchModel->getByID(churchID: $id, withAddress: false);
+        $church = $this->churchService->getByID(churchID: $id, withAddress: false, withImages: false);
 
 
         if ($church === []) {
@@ -56,20 +58,16 @@ class ChurchesImagesController extends BaseController
 
         $images = $this->request->getFiles('images');
 
+        $this->churchService->salvarImagem(images: $images, churchID: $id);
+
+        $data = $this->churchService->getByID(churchID: $id, withAddress: true, withImages: true);
 
 
-        $dataImages = ImageService::storeImages($images, 'churches', 'church_id', $church->id);
-
-        $this->churchModel->salvarImagem($dataImages, $church->id);
-
-        $church = $this->churchModel->getByID(churchID: $id, withAddress: false);
-
-        //$church = $this->churchService->getByID(churchID: $church[0]->id, withAddress: false, withImages: true);
 
         return $this->resposta->set_response(
             status: 200,
             message: 'success',
-            data: $church,
+            data: $data,
             user_id: $this->user->id
         );
     }

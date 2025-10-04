@@ -76,6 +76,20 @@ class ChurchService
 
         $church = $this->churchModel->getByID(churchID: $churchID, withAddress: $withAddress, withImages: $withImages);
 
+        if($church !== null){
+            $image = $church->image();
+        }else {
+            $image = [];
+        }
+
+        //
+
+        if($church->address !== null){
+            $address = $church->address->getFullAddress();
+        }else {
+            $address = [];
+        }
+
         $data = [];
 
         if (is_null($church)) {
@@ -95,8 +109,8 @@ class ChurchService
             "is_sede" => $church->is_sede,
             "ativo" => $church->ativo,
             "superintendente_id" => $church->superintendente_id,
-            "images" => $church->image(),
-            "address" => $church->address->getFullAddress(),
+            "images" => $image,
+            "address" => $address,
             "created_at" => $church->created_at->date,
             "updated_at" => $church->updated_at->date,
             "deleted_at" => $church->deleted_at->date ?? null,
@@ -114,8 +128,6 @@ class ChurchService
     {
         return $this->churchModel->getLastID();
     }
-
-    public function addChurch() {}
 
     /**
      * Método responsável tanto para salvar uma Church com para editar
@@ -158,15 +170,11 @@ class ChurchService
     public function salvarImagem(array $images, int $churchID)
     {
         try {
-
-            $church = $this->getByID(churchID: $churchID, withAddress: false);
-
-            $dataImages = ImageService::storeImages($images, 'churches', 'church_id', $church[0]->id);
-
-            $this->churchModel->salvarImagem($dataImages, $church[0]->id);
+            $dataImages = ImageService::storeImages($images, 'churches', 'church_id', $churchID);
+            $this->churchModel->salvarImagem(dataImages: $dataImages);
         } catch (\Exception $e) {
             log_message('error', "Erro ao salvar image {$e->getMessage()}");
-            die('Error saving data');
+            die('Erro ao salvar image Church');
         }
     }
 
