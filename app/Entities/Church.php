@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use App\Services\ImageService;
 use CodeIgniter\Entity\Entity;
 
 class Church extends Entity
@@ -108,6 +109,7 @@ class Church extends Entity
 
     private function buildRouteForImageAPI(string $image): string
     {
+        //$url = ImageService::showImage(imagePath: 'churches', image: $image, sizeImage: $sizeImage);
 
         return site_url("assets/images/churches/small/$image");
     }

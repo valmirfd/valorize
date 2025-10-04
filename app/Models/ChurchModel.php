@@ -72,7 +72,7 @@ class ChurchModel extends AppModel
             foreach ($churches as $church) {
                 $church->images = $this->getImageChurch($church->id);
                 if ($withAddress) {
-                    $church->address = model(AddressModel::class)->asObject()->find($church->address_id);
+                    $church->address = model(AddressModel::class)->find($church->address_id);
                 }
             }
         }

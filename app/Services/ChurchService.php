@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Entities\Address;
 use App\Entities\Church;
 use App\Models\ChurchModel;
-use CodeIgniter\Config\Factories;
+
 
 class ChurchService
 {
@@ -26,9 +26,38 @@ class ChurchService
     public function getChurchesForUserAPI(bool $withAddress = false): array|null
     {
 
-        $churches = $this->churchModel->asObject()->getChurchesForUserAPI(withAddress: $withAddress);
+        $churches = $this->churchModel->getChurchesForUserAPI(withAddress: $withAddress);
+        $data = [];
 
-        return $churches;
+        if (is_null($churches)) {
+            return null;
+        }
+
+        foreach ($churches as $church) {
+
+            $data[] = [
+                "id" => $church->id,
+                "nome" => $church->nome,
+                "telefone" => $church->telefone,
+                "cnpj" => $church->cnpj,
+                "code" => $church->code,
+                "situacao" => $church->situacao,
+                "user_id" => $church->id,
+                "address_id" => $church->user_id,
+                "titular_id" => $church->titular_id,
+                "is_sede" => $church->is_sede,
+                "ativo" => $church->ativo,
+                "superintendente_id" => $church->superintendente_id,
+                "images" => $church->image(),
+                "address" => $church->address->getFullAddress(),
+                "created_at" => $church->created_at->date,
+                "updated_at" => $church->updated_at->date,
+                "deleted_at" => $church->deleted_at->date ?? null,
+            ];
+        }
+
+
+        return $data;
     }
 
     /**
@@ -47,34 +76,31 @@ class ChurchService
 
         $church = $this->churchModel->getByID(churchID: $churchID, withAddress: $withAddress, withImages: $withImages);
 
+        $data = [];
+
+        if (is_null($church)) {
+            return null;
+        }
 
         $data = [
             "id" => $church->id,
-            "user_id" => $church->id,
-            "address_id" => $church->user_id,
             "nome" => $church->nome,
             "telefone" => $church->telefone,
             "cnpj" => $church->cnpj,
             "code" => $church->code,
             "situacao" => $church->situacao,
-            "superintendente_id" => $church->superintendente_id,
+            "user_id" => $church->id,
+            "address_id" => $church->user_id,
             "titular_id" => $church->titular_id,
             "is_sede" => $church->is_sede,
             "ativo" => $church->ativo,
-            "address" => $church->address->getFullAddress(),
+            "superintendente_id" => $church->superintendente_id,
             "images" => $church->image(),
-            "created_at" => $church->created_at,
-            "updated_at" => $church->updated_at,
-            "deleted_at" => $church->deleted_at,
+            "address" => $church->address->getFullAddress(),
+            "created_at" => $church->created_at->date,
+            "updated_at" => $church->updated_at->date,
+            "deleted_at" => $church->deleted_at->date ?? null,
         ];
-
-
-
-
-        if (is_null($church)) {
-
-            return null;
-        }
 
         return $data;
     }
