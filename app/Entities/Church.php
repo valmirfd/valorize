@@ -108,10 +108,7 @@ class Church extends Entity
 
     private function buildRouteForImageAPI(string $image): string
     {
-        //return route_to('image.church', $image, 'small');
-        return site_url("image-church/churches/small/$image");
 
-        //image-church/(:any)/(:any)
-        //return site_url("image-church/small/$image");
+        return site_url("assets/images/churches/small/$image");
     }
 }

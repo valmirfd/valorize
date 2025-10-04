@@ -47,6 +47,7 @@ class ChurchService
 
         $church = $this->churchModel->getByID(churchID: $churchID, withAddress: $withAddress, withImages: $withImages);
 
+
         $data = [
             "id" => $church->id,
             "user_id" => $church->id,
@@ -67,7 +68,7 @@ class ChurchService
             "deleted_at" => $church->deleted_at,
         ];
 
-       
+
 
 
         if (is_null($church)) {

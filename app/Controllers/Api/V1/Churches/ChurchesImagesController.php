@@ -74,11 +74,10 @@ class ChurchesImagesController extends BaseController
         );
     }
 
-    public function imageChurch(string|null $image = null, string $sizeImage = 'regular')
+    public function imageChurch(string|null $image = null)
     {
-        ImageService::showImage('churches', $image, $sizeImage);
 
-        //public/assets/images/churches/1759522626_61e83e1bafc1f6df2037.jpg
+        ImageService::showImage(imagePath: 'churches', image: $image, sizeImage: 'regular');
     }
 
     public function deleteImageChurchOld(string|null $image = null)
