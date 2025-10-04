@@ -40,7 +40,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\API\V1'], static function
             $routes->delete('destroy-image/(:num)', [ChurchesImagesController::class, 'deleteImageChurch']);
             //$routes->options('upload', static function () {});
             $routes->options('upload/(:any)', static function () {});
-            $routes->options('upload/(:any)/(:any)', static function () {});
+            $routes->options('image-church/(:any)/(:any)', static function () {});
         });
     });
 });

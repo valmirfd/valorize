@@ -10,12 +10,11 @@ use CodeIgniter\Config\Factories;
 class ChurchService
 {
     private ChurchModel $churchModel;
-   
+
 
     public function __construct()
     {
         $this->churchModel = model(ChurchModel::class);
-        
     }
 
     /**
@@ -27,7 +26,7 @@ class ChurchService
     public function getChurchesForUserAPI(bool $withAddress = false): array|null
     {
 
-        $churches = $this->churchModel->getChurchesForUserAPI(withAddress: $withAddress);
+        $churches = $this->churchModel->asObject()->getChurchesForUserAPI(withAddress: $withAddress);
 
         return $churches;
     }
@@ -48,13 +47,35 @@ class ChurchService
 
         $church = $this->churchModel->getByID(churchID: $churchID, withAddress: $withAddress, withImages: $withImages);
 
+        $data = [
+            "id" => $church->id,
+            "user_id" => $church->id,
+            "address_id" => $church->user_id,
+            "nome" => $church->nome,
+            "telefone" => $church->telefone,
+            "cnpj" => $church->cnpj,
+            "code" => $church->code,
+            "situacao" => $church->situacao,
+            "superintendente_id" => $church->superintendente_id,
+            "titular_id" => $church->titular_id,
+            "is_sede" => $church->is_sede,
+            "ativo" => $church->ativo,
+            "address" => $church->address->getFullAddress(),
+            "images" => $church->image(),
+            "created_at" => $church->created_at,
+            "updated_at" => $church->updated_at,
+            "deleted_at" => $church->deleted_at,
+        ];
+
+       
+
 
         if (is_null($church)) {
 
             return null;
         }
 
-        return $church;
+        return $data;
     }
 
     /**
@@ -67,10 +88,7 @@ class ChurchService
         return $this->churchModel->getLastID();
     }
 
-    public function addChurch()
-    {
-        
-    }
+    public function addChurch() {}
 
     /**
      * Método responsável tanto para salvar uma Church com para editar

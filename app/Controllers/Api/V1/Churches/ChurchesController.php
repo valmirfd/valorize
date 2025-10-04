@@ -3,6 +3,8 @@
 namespace App\Controllers\Api\V1\Churches;
 
 use App\Controllers\BaseController;
+use App\Entities\Address;
+use App\Entities\Church;
 use App\Validations\AddressValidation;
 use App\Validations\ChurchValidation;
 use App\Libraries\ApiResponse;
@@ -68,7 +70,9 @@ class ChurchesController extends BaseController
             );
         }
 
+
         $data[] = $church;
+
 
         return $this->resposta->set_response(
             status: 200,
@@ -99,9 +103,7 @@ class ChurchesController extends BaseController
                 );
             }
 
-            //$dadosIgreja = $this->validator->getValidated();
-
-            $inputRequest = $this->request->getJSON(assoc: true);
+            $church = new Church($this->validator->getValidated());
 
 
             //Valida os dados de endereço vindos do post
@@ -117,11 +119,12 @@ class ChurchesController extends BaseController
                 );
             }
 
-            $dadosEndereco = $this->validator->getValidated();
+            //instanciamos o endereço com os dados validados
+            $address = new Address($this->validator->getValidated());
 
-            $addressID = model(AddressModel::class)->insert($dadosEndereco);
+            $success = $this->churchService->store(church: $church, address: $address);
 
-            if (!$addressID) {
+            if (!$success) {
                 return $this->resposta->set_response_error(
                     status: 501,
                     message: 'error',
@@ -130,31 +133,10 @@ class ChurchesController extends BaseController
                 );
             }
 
-            if ($addressID) {
 
-                $igreja = [
-                    'nome'       => $inputRequest['nome'],
-                    'telefone'   => $inputRequest['telefone'],
-                    'cnpj'       => $inputRequest['cnpj'],
-                    'situacao'   => $inputRequest['situacao'],
-                    'is_sede'    => $inputRequest['is_sede'],
-                    'address_id' => $addressID
-                ];
+            $id = $this->churchService->getLastID();
 
-
-                $igrejaID = model(ChurchModel::class)->insert($igreja);
-
-                if (!$igrejaID) {
-                    return $this->resposta->set_response_error(
-                        status: 501,
-                        message: 'error',
-                        data: ['info' => 'Opss! Algo deu errado tente novamente.'],
-                        user_id: $this->user->id
-                    );
-                }
-            }
-
-            $churchCreated = $this->churchService->getByID(churchID: $igrejaID);
+            $churchCreated = $this->churchService->getByID(churchID: $id, withAddress: true, withImages: true);
 
             return $this->resposta->set_response(
                 status: 200,
@@ -282,4 +264,6 @@ class ChurchesController extends BaseController
             user_id: $this->user->id
         );
     }
+
+   
 }

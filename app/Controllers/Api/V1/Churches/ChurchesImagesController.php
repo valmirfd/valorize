@@ -77,6 +77,8 @@ class ChurchesImagesController extends BaseController
     public function imageChurch(string|null $image = null, string $sizeImage = 'regular')
     {
         ImageService::showImage('churches', $image, $sizeImage);
+
+        //public/assets/images/churches/1759522626_61e83e1bafc1f6df2037.jpg
     }
 
     public function deleteImageChurchOld(string|null $image = null)

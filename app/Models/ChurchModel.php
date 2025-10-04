@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Entities\Church;
 use App\Models\Basic\AppModel;
 
 
@@ -18,7 +19,7 @@ class ChurchModel extends AppModel
     protected $table            = 'churches';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'object';
+    protected $returnType       = Church::class;
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
@@ -71,7 +72,7 @@ class ChurchModel extends AppModel
             foreach ($churches as $church) {
                 $church->images = $this->getImageChurch($church->id);
                 if ($withAddress) {
-                    $church->address = model(AddressModel::class)->find($church->address_id);
+                    $church->address = model(AddressModel::class)->asObject()->find($church->address_id);
                 }
             }
         }
