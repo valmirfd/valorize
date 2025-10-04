@@ -17,20 +17,21 @@ class ChurchesController extends BaseController
 
     private ApiResponse $resposta;
 
-    private ChurchModel $churchModel;
+
+    private ChurchService $churchService;
     private $user;
 
     public function __construct()
     {
         $this->resposta = Factories::class(ApiResponse::class);
+        $this->churchService = Factories::class(ChurchService::class);
         $this->user = auth()->user();
-        $this->churchModel = model(ChurchModel::class);
     }
 
     public function index(): string|false
     {
         $this->resposta->validate_request('get');
-        $churches = $this->churchModel->getChurchesForUserAPI(withAddress: true);
+        $churches = $this->churchService->getChurchesForUserAPI(withAddress: true);
 
         if ($churches === []) {
             return $this->resposta->set_response(
@@ -55,7 +56,7 @@ class ChurchesController extends BaseController
 
         $data = [];
 
-        $church = $this->churchModel->getByID(churchID: $id, withAddress: true, withImages: true);
+        $church = $this->churchService->getByID(churchID: $id, withAddress: true, withImages: true);
 
 
         if ($church === null) {
@@ -141,7 +142,7 @@ class ChurchesController extends BaseController
                 ];
 
 
-                $igrejaID = $this->churchModel->insert($igreja);
+                $igrejaID = model(ChurchModel::class)->insert($igreja);
 
                 if (!$igrejaID) {
                     return $this->resposta->set_response_error(
@@ -153,7 +154,7 @@ class ChurchesController extends BaseController
                 }
             }
 
-            $churchCreated = $this->churchModel->find($igrejaID);
+            $churchCreated = $this->churchService->getByID(churchID: $igrejaID);
 
             return $this->resposta->set_response(
                 status: 200,
@@ -178,7 +179,7 @@ class ChurchesController extends BaseController
         $this->resposta->validate_request('put');
         $data = [];
 
-        $church = $this->churchModel->getByID(churchID: $id, withAddress: true, withImages: false);
+        $church = $this->churchService->getByID(churchID: $id, withAddress: true, withImages: false);
 
         if ($church === null) {
             return $this->resposta->set_response_error(
@@ -221,7 +222,7 @@ class ChurchesController extends BaseController
         $inputEndereco = $this->validator->getValidated();
 
         model(AddressModel::class)->update($church->address_id, $inputEndereco);
-        $success = $this->churchModel->update($church->id, $inputIgreja);
+        $success = model(ChurchModel::class)->update($church->id, $inputIgreja);
 
 
         //Se não foi salvo, retorna uma mensagem de erro
@@ -234,7 +235,7 @@ class ChurchesController extends BaseController
             );
         }
 
-        $church = $this->churchModel->getByID(churchID: $church->id, withAddress: true);
+        $church = $this->churchService->getByID(churchID: $church->id, withAddress: true);
 
 
         return $this->resposta->set_response(
@@ -251,7 +252,7 @@ class ChurchesController extends BaseController
         $this->resposta->validate_request('delete');
         $data = [];
 
-        $church = $this->churchModel->getByID(churchID: $id, withAddress: true, withImages: true);
+        $church = $this->churchService->getByID(churchID: $id, withAddress: true, withImages: true);
 
         if ($church === null) {
             return $this->resposta->set_response_error(
@@ -262,7 +263,7 @@ class ChurchesController extends BaseController
             );
         }
 
-        $success = $this->churchModel->destroy($church);
+        $success = model(ChurchModel::class)->destroy($church);
         if (!$success) {
             return $this->resposta->set_response_error(
                 status: 404,

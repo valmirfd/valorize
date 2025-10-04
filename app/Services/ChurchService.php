@@ -5,14 +5,17 @@ namespace App\Services;
 use App\Entities\Address;
 use App\Entities\Church;
 use App\Models\ChurchModel;
+use CodeIgniter\Config\Factories;
 
 class ChurchService
 {
     private ChurchModel $churchModel;
+   
 
     public function __construct()
     {
         $this->churchModel = model(ChurchModel::class);
+        
     }
 
     /**
