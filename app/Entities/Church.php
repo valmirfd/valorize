@@ -2,7 +2,7 @@
 
 namespace App\Entities;
 
-use App\Services\ImageService;
+
 use CodeIgniter\Entity\Entity;
 
 class Church extends Entity

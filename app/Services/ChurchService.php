@@ -27,6 +27,7 @@ class ChurchService
     {
 
         $churches = $this->churchModel->getChurchesForUserAPI(withAddress: $withAddress);
+
         $data = [];
 
         if (is_null($churches)) {
@@ -50,9 +51,9 @@ class ChurchService
                 "superintendente_id" => $church->superintendente_id,
                 "images" => $church->image(),
                 "address" => $church->address->getFullAddress(),
-                "created_at" => $church->created_at->date,
-                "updated_at" => $church->updated_at->date,
-                "deleted_at" => $church->deleted_at->date ?? null,
+                "created_at" => $church->created_at,
+                "updated_at" => $church->updated_at,
+                "deleted_at" => $church->deleted_at,
             ];
         }
 
@@ -76,17 +77,16 @@ class ChurchService
 
         $church = $this->churchModel->getByID(churchID: $churchID, withAddress: $withAddress, withImages: $withImages);
 
-        if($church !== null){
+        if ($church !== null) {
             $image = $church->image();
-        }else {
+        } else {
             $image = [];
         }
 
-        //
 
-        if($church->address !== null){
+        if ($church->address !== null) {
             $address = $church->address->getFullAddress();
-        }else {
+        } else {
             $address = [];
         }
 
