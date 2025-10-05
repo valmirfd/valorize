@@ -264,6 +264,4 @@ class ChurchesController extends BaseController
             user_id: $this->user->id
         );
     }
-
-   
 }

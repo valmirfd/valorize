@@ -28,12 +28,11 @@ class ChurchService
 
         $churches = $this->churchModel->getChurchesForUserAPI(withAddress: $withAddress);
 
-        $data = [];
-
         if (is_null($churches)) {
-            return null;
+            return [];
         }
 
+        $data = [];
         foreach ($churches as $church) {
 
             $data[] = [
@@ -53,7 +52,6 @@ class ChurchService
                 "address" => $church->address->getFullAddress(),
                 "created_at" => $church->created_at->humanize(),
                 "updated_at" => $church->updated_at->humanize(),
-                "deleted_at" => $church->deleted_at ? $church->deleted_at->humanize : null,
             ];
         }
 

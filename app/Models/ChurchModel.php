@@ -58,7 +58,7 @@ class ChurchModel extends AppModel
         $builder = $this;
 
         $tableFields = [
-            'churches.*'
+            'churches.*',
         ];
 
         $builder->select($tableFields);
