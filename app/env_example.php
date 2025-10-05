@@ -33,10 +33,9 @@ app.baseURL = 'http://localhost:8080/'
 #--------------------------------------------------------------------
 
 database.default.hostname = localhost
-# database.default.database = valo3906_pizzaria_back
+database.default.database = valo3906_pizzaria_back
 # database.default.username = valo3906_user_pizzaria
 # database.default.password = user_valorize
-database.default.database = a_valorize_v2
 database.default.username = root
 database.default.password = 
 database.default.DBDriver = MySQLi
