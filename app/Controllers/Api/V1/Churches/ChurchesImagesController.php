@@ -31,9 +31,7 @@ class ChurchesImagesController extends BaseController
         $this->resposta->validate_request('post');
         $data = [];
 
-
-        $church = $this->churchService->getByID(churchID: $id, withAddress: false, withImages: false);
-
+        $church = model(ChurchModel::class)->getByID(churchID: $id, withAddress: false, withImages: false);
 
         if ($church === []) {
             return $this->resposta->set_response_error(
