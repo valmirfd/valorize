@@ -51,9 +51,9 @@ class ChurchService
                 "superintendente_id" => $church->superintendente_id,
                 "images" => $church->image(),
                 "address" => $church->address->getFullAddress(),
-                "created_at" => $church->created_at,
-                "updated_at" => $church->updated_at,
-                "deleted_at" => $church->deleted_at,
+                "created_at" => $church->created_at->humanize(),
+                "updated_at" => $church->updated_at->humanize(),
+                "deleted_at" => $church->deleted_at ? $church->deleted_at->humanize : null,
             ];
         }
 
