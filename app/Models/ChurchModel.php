@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Entities\Address;
 use App\Entities\Church;
 use App\Models\Basic\AppModel;
-
+use App\Services\ImageService;
 
 class ChurchModel extends AppModel
 {
@@ -132,18 +132,31 @@ class ChurchModel extends AppModel
         return $this->getInsertID();
     }
 
-    public function destroy(object $church): bool
+    public function destroy(Church $church): bool
     {
+
+        $images = $church->images;
+
         try {
 
             //Iniciamos a transaction
             $this->db->transException(true)->transStart();
 
+            //Exclui a Church
             $this->delete($church->id);
 
+            //Exclui o endereço associado
             model(AddressModel::class)->delete($church->address_id);
 
+            //Excluir no file system as imagens
+            if ($images !== null || $images !== []) {
 
+                foreach ($images as $image) {
+                    $data = $image->image;
+
+                    ImageService::destroyImage('churches', $data);
+                }
+            }
 
             //Finalizamos a transaction
             $this->db->transComplete();
@@ -151,7 +164,7 @@ class ChurchModel extends AppModel
             //Retorna o status da transaction (true or false)
             return $this->db->transStatus();
         } catch (\Throwable $th) {
-            log_message('error', "Erro ao excluir Church {$th->getMessage()}");
+            log_message('error', "Erro ao excluir o responsável {$th->getMessage()}");
             return false;
         }
     }

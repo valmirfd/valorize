@@ -21,12 +21,14 @@ class ChurchesController extends BaseController
 
 
     private ChurchService $churchService;
+    private ChurchModel $churchModel;
     private $user;
 
     public function __construct()
     {
         $this->resposta = Factories::class(ApiResponse::class);
         $this->churchService = Factories::class(ChurchService::class);
+        $this->churchModel = model(ChurchModel::class);
         $this->user = auth()->user();
     }
 
@@ -228,9 +230,8 @@ class ChurchesController extends BaseController
     public function destroy($id = null): string|false
     {
         $this->resposta->validate_request('delete');
-        $data = [];
 
-        $church = $this->churchService->getByID(churchID: $id, withAddress: true, withImages: true);
+        $church = $this->churchModel->getByID(churchID: $id, withAddress: false, withImages: true);
 
         if ($church === null) {
             return $this->resposta->set_response_error(
@@ -251,12 +252,11 @@ class ChurchesController extends BaseController
             );
         }
 
-        $data[] = $church;
 
         return $this->resposta->set_response(
             status: 200,
             message: 'success',
-            data: $data,
+            data: ['info' => 'Tudo certo :)'],
             user_id: $this->user->id
         );
     }
