@@ -60,7 +60,6 @@ class ChurchesController extends BaseController
 
         $church = $this->churchService->getByID(churchID: $id, withAddress: true, withImages: true);
 
-
         if ($church === null) {
             return $this->resposta->set_response_error(
                 status: 404,
@@ -70,9 +69,7 @@ class ChurchesController extends BaseController
             );
         }
 
-
         $data[] = $church;
-
 
         return $this->resposta->set_response(
             status: 200,
@@ -161,7 +158,9 @@ class ChurchesController extends BaseController
         $this->resposta->validate_request('put');
         $data = [];
 
-        $church = $this->churchService->getByID(churchID: $id, withAddress: true, withImages: false);
+        //$church = $this->churchService->getByID(churchID: $id, withAddress: true, withImages: false);
+        $church = model(ChurchModel::class)->getByID(churchID: $id, withAddress: true, withImages: false);
+
 
         if ($church === null) {
             return $this->resposta->set_response_error(
@@ -184,9 +183,7 @@ class ChurchesController extends BaseController
             );
         }
 
-        $inputIgreja = $this->validator->getValidated();
-
-
+        $church->fill($this->validator->getValidated());
 
         $rules = (new AddressValidation)->getRules();
         if (!$this->validate($rules)) {
@@ -200,11 +197,10 @@ class ChurchesController extends BaseController
 
         //Recuparamos o endereço associado
         $address = $church->address;
+        $address->fill($this->validator->getValidated());
 
-        $inputEndereco = $this->validator->getValidated();
-
-        model(AddressModel::class)->update($church->address_id, $inputEndereco);
-        $success = model(ChurchModel::class)->update($church->id, $inputIgreja);
+ 
+        $success = $this->churchService->store(church: $church, address: $address);
 
 
         //Se não foi salvo, retorna uma mensagem de erro
@@ -217,7 +213,7 @@ class ChurchesController extends BaseController
             );
         }
 
-        $church = $this->churchService->getByID(churchID: $church->id, withAddress: true);
+        $church = $this->churchService->getByID(churchID: $church->id, withAddress: true, withImages: true);
 
 
         return $this->resposta->set_response(

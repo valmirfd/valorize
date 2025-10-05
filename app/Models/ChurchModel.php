@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Entities\Address;
 use App\Entities\Church;
 use App\Models\Basic\AppModel;
 
@@ -83,38 +84,27 @@ class ChurchModel extends AppModel
     public function getByID(
         string|null $churchID,
         bool $withAddress = false,
-        bool $withImages = false
+        bool $withImages = false,
+    ): Church|null {
+        $church = $this->where(['id' => $churchID])->where(['superintendente_id' => $this->user->id])->first();
 
-    ) {
+        if ($church === null) {
+            return null;
+        }
 
-        $builder = $this;
+        if ($withImages) {
+            $church->images = $this->getImageChurch($church->id);
+        }
 
-        $tableFields = [
-            'churches.*'
-        ];
-
-        $builder->select($tableFields);
-        $builder->where('churches.id', $churchID);
-        $builder->where('churches.superintendente_id', $this->user->id);
-        $church = $builder->find($churchID);
-
-        // Foi encontrado uma church?
-        if (!is_null($church)) {
-
-            if ($withImages) {
-                $church->images = $this->getImageChurch($church->id);
-            }
-
-            if ($withAddress) {
-                $church->address = model(AddressModel::class)->find($church->address_id);
-            }
+        if ($withAddress) {
+            $church->address = model(AddressModel::class)->find($church->address_id);
         }
 
         return $church;
     }
 
 
-    public function store(object $church, object $address): bool
+    public function store(Church $church, Address $address): bool
     {
         try {
 
