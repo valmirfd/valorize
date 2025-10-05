@@ -31,7 +31,7 @@ class ChurchesImagesController extends BaseController
         $this->resposta->validate_request('post');
         $data = [];
 
-        $church = model(ChurchModel::class)->getByID(churchID: $id, withAddress: false, withImages: false);
+        $church = $this->churchModel->getByID(churchID: $id, withAddress: false, withImages: false);
 
         if ($church === []) {
             return $this->resposta->set_response_error(
@@ -76,22 +76,6 @@ class ChurchesImagesController extends BaseController
         ImageService::showImage(imagePath: 'churches', image: $image, sizeImage: 'regular');
     }
 
-    public function deleteImageChurchOld(string|null $image = null)
-    {
-        $this->resposta->validate_request('delete');
-
-        $result = $this->request->getJSON(assoc: true);
-
-        $this->churchModel->deleteImage($result['church_id'], $image);
-
-        return $this->resposta->set_response(
-            status: 200,
-            message: 'success',
-            data: [],
-            user_id: $this->user->id
-        );
-    }
-
     public function deleteImageChurch(int|null $id = null)
     {
         $this->resposta->validate_request('delete');
@@ -109,7 +93,13 @@ class ChurchesImagesController extends BaseController
         //Recebe o nome da image (name_image)
         $result = $this->request->getJSON(assoc: true);
 
-        $this->churchModel->deleteImage($church->id, $result['name_image']);
+        $nameImage = $result['name_image'];
+
+        $success = $this->churchModel->deleteImage($church->id, $nameImage);
+
+        if ($success) {
+            ImageService::destroyImage('churches', $result['name_image']);
+        }
 
         return $this->resposta->set_response(
             status: 200,
