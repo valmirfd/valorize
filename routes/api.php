@@ -2,6 +2,7 @@
 
 use App\Controllers\Api\V1\Churches\ChurchesController;
 use App\Controllers\Api\V1\Churches\ChurchesImagesController;
+use App\Controllers\Api\V1\Igrejas\IgrejasController;
 use App\Controllers\Api\V1\LoginController;
 use App\Controllers\Api\V1\RegisterController;
 use App\Controllers\Api\V1\UserController;
@@ -41,6 +42,17 @@ $routes->group('api', ['namespace' => 'App\Controllers\API\V1'], static function
             //$routes->options('upload', static function () {});
             $routes->options('upload/(:any)', static function () {});
             $routes->options('image-church/(:any)/(:any)', static function () {});
+        });
+
+        $routes->group('igrejas', ['namespace' => 'App\Controllers\Api\V1\Igrejas'], static function ($routes) {
+            $routes->get('list', [IgrejasController::class, 'index']);
+            $routes->get('show/(:num)', [ChurchesController::class, 'show']);
+            $routes->post('create', [ChurchesController::class, 'create']);
+            $routes->put('update/(:num)', [ChurchesController::class, 'update']);
+            $routes->delete('destroy/(:num)', [ChurchesController::class, 'destroy']);
+            $routes->options('', static function () {});
+            $routes->options('(:any)', static function () {});
+
         });
     });
 });

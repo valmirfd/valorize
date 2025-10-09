@@ -35,7 +35,7 @@ class ChurchesController extends BaseController
     public function index(): string|false
     {
         $this->resposta->validate_request('get');
-        $churches = $this->churchService->getChurchesForUserAPI(withAddress: true);
+        $churches =  $this->churchService->getChurchesForUserAPI(withAddress: true);
 
         if ($churches === []) {
             return $this->resposta->set_response(
