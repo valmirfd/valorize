@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Entities\Address;
 use App\Entities\Igreja;
 use App\Models\Basic\AppModel;
 
@@ -110,6 +111,34 @@ class IgrejaModel extends AppModel
 
         // Retornamos a Igreja que pode ou não ter imagens
         return $igreja;
+    }
+
+    public function store(Igreja $igreja, Address $address): bool
+    {
+        try {
+
+            //Iniciamos a transaction
+            $this->db->transException(true)->transStart();
+
+            model(AddressModel::class)->save($address);
+            $igreja->address_id = $address->id ?? model(AddressModel::class)->getInsertID();
+
+            $this->save($igreja);
+
+            //Finalizamos a transaction
+            $this->db->transComplete();
+
+            //Retorna o status da transaction (true or false)
+            return $this->db->transStatus();
+        } catch (\Throwable $th) {
+            log_message('error', "Erro ao salvar Igreja {$th->getMessage()}");
+            return false;
+        }
+    }
+
+    public function getLastID(): int
+    {
+        return $this->getInsertID();
     }
 
     //Métodos Privados

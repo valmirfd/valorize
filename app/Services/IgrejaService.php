@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Entities\Address;
+use App\Entities\Igreja;
 use App\Models\IgrejaModel;
 
 class IgrejaService
@@ -50,6 +52,17 @@ class IgrejaService
         return $data;
     }
 
+    public function getByID(
+        int $igrejaID,
+        bool $withAddress = false,
+        bool $withImages = false,
+    ): Igreja {
+
+        $igreja = $this->igrejaModel->getByID(igrejaID: $igrejaID, withAddress: $withAddress, withImages: $withImages);
+
+        return $igreja;
+    }
+
     public function showIgreja(
         string|null $igrejaID,
         bool $withAddress = false,
@@ -89,5 +102,15 @@ class IgrejaService
         ];
 
         return $data;
+    }
+
+    public function store(Igreja $igreja, Address $address): bool
+    {
+        return $this->igrejaModel->store(igreja: $igreja, address: $address);
+    }
+
+    public function getLastID(): int
+    {
+        return $this->igrejaModel->getLastID();
     }
 }
