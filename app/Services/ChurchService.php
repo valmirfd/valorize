@@ -79,9 +79,11 @@ class ChurchService
         if ($church !== null) {
             $image = $church->image();
             $address = $church->address->getFullAddress();
+            $endereco = $church->address;
         } else {
             $image = [];
             $address = [];
+            $endereco = [];
         }
 
         $data = [];
@@ -105,6 +107,7 @@ class ChurchService
             "superintendente_id" => $church->superintendente_id,
             "images" => $image,
             "address" => $address,
+            "endereco" => $endereco,
             "created_at" => $church->created_at->humanize(),
             "updated_at" => $church->updated_at->humanize(),
         ];
