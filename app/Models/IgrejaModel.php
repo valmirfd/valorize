@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Entities\Address;
 use App\Entities\Igreja;
 use App\Models\Basic\AppModel;
-
+use App\Services\ImageService;
 
 class IgrejaModel extends AppModel
 {
@@ -84,7 +84,7 @@ class IgrejaModel extends AppModel
         int $igrejaID,
         bool $withAddress = false,
         bool $withImages = false,
-    ): Igreja {
+    ): Igreja|null {
         $builder = $this;
 
         $tableFields = [
@@ -136,9 +136,69 @@ class IgrejaModel extends AppModel
         }
     }
 
+    public function salvarImagem(array $dataImages)
+    {
+
+        try {
+            $this->db->transStart();
+            $this->db->table('igrejas_images')->insertBatch($dataImages);
+            $this->db->transComplete();
+        } catch (\Exception $e) {
+            log_message('error', "Erro ao salvar image {$e->getMessage()}");
+            die('Error saving data');
+        }
+    }
+
     public function getLastID(): int
     {
         return $this->getInsertID();
+    }
+
+    public function destroy(Igreja $igreja): bool
+    {
+
+        $images = $igreja->images;
+
+        try {
+
+            //Iniciamos a transaction
+            $this->db->transException(true)->transStart();
+
+            //Exclui a Church
+            $this->delete($igreja->id);
+
+            //Exclui o endereço associado
+            model(AddressModel::class)->delete($igreja->address_id);
+
+            //Excluir no file system as imagens
+            if ($images !== null || $images !== []) {
+
+                foreach ($images as $image) {
+                    $data = $image->image;
+
+                    ImageService::destroyImage('igrejas', $data);
+                }
+            }
+
+            //Finalizamos a transaction
+            $this->db->transComplete();
+
+            //Retorna o status da transaction (true or false)
+            return $this->db->transStatus();
+        } catch (\Throwable $th) {
+            log_message('error', "Erro ao excluir Igreja {$th->getMessage()}");
+            return false;
+        }
+    }
+
+    public function deleteImage(int $igrejaID, string $image): bool
+    {
+        $criteria = [
+            'igreja_id' => $igrejaID,
+            'image'     => $image
+        ];
+
+        return $this->db->table('igrejas_images')->where($criteria)->delete();
     }
 
     //Métodos Privados

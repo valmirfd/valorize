@@ -154,4 +154,113 @@ class IgrejasController extends BaseController
             );
         }
     }
+
+    //Editar uma Igreja do user logado
+    public function update($igrejaID = null)
+    {
+        $this->resposta->validate_request('put');
+        $data = [];
+
+        $igreja = $this->igrejaService->getByID(igrejaID: $igrejaID, withAddress: true, withImages: false);
+
+        if ($igreja === null) {
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'not found',
+                data: ['info' => 'Não há dados para exibir'],
+                user_id: $this->user->id
+            );
+        }
+
+        $rules = (new IgrejaValidation)->getRules($igreja->id);
+        if (!$this->validate($rules)) {
+            $data[] = $this->validator->getErrors();
+
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'error',
+                data: $data,
+                user_id: $this->user->id
+            );
+        }
+
+        $igreja->fill($this->validator->getValidated());
+
+        $rules = (new AddressValidation)->getRules();
+        if (!$this->validate($rules)) {
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'error',
+                data: $data,
+                user_id: $this->user->id
+            );
+        }
+
+        //Recuparamos o endereço associado
+        $address = $igreja->address;
+        $address->fill($this->validator->getValidated());
+
+        $success = $this->igrejaService->store(igreja: $igreja, address: $address);
+
+        //Se não foi salvo, retorna uma mensagem de erro
+        if (!$success) {
+            return $this->resposta->set_response_error(
+                status: 501,
+                message: 'error',
+                data: ['info' => 'Opss! Algo deu errado tente novamente.'],
+                user_id: $this->user->id
+            );
+        }
+
+        $igrejaEditada = [];
+
+        $igreja = $this->igrejaService->showIgreja(igrejaID: $igreja->id, withAddress: true, withImages: true);
+
+        $igrejaEditada[] = $igreja;
+
+
+        return $this->resposta->set_response(
+            status: 200,
+            message: 'success',
+            data: $igrejaEditada,
+            user_id: $this->user->id
+        );
+    }
+
+    public function destroy($igrejaID = null): string|false
+    {
+        $this->resposta->validate_request('delete');
+
+        $igreja = $this->igrejaService->getByID(igrejaID: $igrejaID, withAddress: false, withImages: true);
+
+        if ($igreja === null) {
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'not found',
+                data: ['info' => 'Não há dados para exibir'],
+                user_id: $this->user->id
+            );
+        }
+
+        $success = $this->igrejaService->destroy($igreja);
+        
+        if (!$success) {
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'error',
+                data: ['info' => 'Opss! Aconteceu um erro na exclusão tente novamente'],
+                user_id: $this->user->id
+            );
+        }
+
+        $igrejaExcluida = $igreja;
+
+
+        return $this->resposta->set_response(
+            status: 200,
+            message: 'success',
+            data: $igrejaExcluida,
+            user_id: $this->user->id
+        );
+    }
 }

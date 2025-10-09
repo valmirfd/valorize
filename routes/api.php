@@ -3,6 +3,7 @@
 use App\Controllers\Api\V1\Churches\ChurchesController;
 use App\Controllers\Api\V1\Churches\ChurchesImagesController;
 use App\Controllers\Api\V1\Igrejas\IgrejasController;
+use App\Controllers\Api\V1\Igrejas\IgrejasImagesController;
 use App\Controllers\Api\V1\LoginController;
 use App\Controllers\Api\V1\RegisterController;
 use App\Controllers\Api\V1\UserController;
@@ -53,6 +54,12 @@ $routes->group('api', ['namespace' => 'App\Controllers\API\V1'], static function
             $routes->options('', static function () {});
             $routes->options('(:any)', static function () {});
 
+            //Images
+            $routes->get('image-igreja/(:any)', [IgrejasImagesController::class, 'imageIgreja']);
+            $routes->post('upload/(:num)', [IgrejasImagesController::class, 'upload']);
+            $routes->delete('destroy-image/(:num)', [IgrejasImagesController::class, 'deleteImageIgreja']);
+            $routes->options('upload/(:any)', static function () {});
+            $routes->options('image-igreja/(:any)', static function () {});
         });
     });
 });

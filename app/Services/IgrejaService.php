@@ -56,7 +56,7 @@ class IgrejaService
         int $igrejaID,
         bool $withAddress = false,
         bool $withImages = false,
-    ): Igreja {
+    ): Igreja|null {
 
         $igreja = $this->igrejaModel->getByID(igrejaID: $igrejaID, withAddress: $withAddress, withImages: $withImages);
 
@@ -109,8 +109,35 @@ class IgrejaService
         return $this->igrejaModel->store(igreja: $igreja, address: $address);
     }
 
+    public function salvarImagem(array $images, int $igrejaID)
+    {
+        try {
+            $dataImages = ImageService::storeImages(
+                images: $images,
+                pathToStore: 'igrejas',
+                propertyKey: 'igreja_id',
+                propertyValue: $igrejaID
+            );
+            $this->igrejaModel->salvarImagem(dataImages: $dataImages);
+        } catch (\Exception $e) {
+            log_message('error', "Erro ao salvar image {$e->getMessage()}");
+            die('Erro ao salvar image Igreja');
+        }
+    }
+
     public function getLastID(): int
     {
         return $this->igrejaModel->getLastID();
+    }
+
+    public function destroy(Igreja $igreja): bool
+    {
+        return $this->igrejaModel->destroy($igreja);
+    }
+
+    public function deleteImage(int $igrejaID, string $image): bool
+    {
+
+        return $this->igrejaModel->deleteImage(igrejaID: $igrejaID, image: $image);
     }
 }
