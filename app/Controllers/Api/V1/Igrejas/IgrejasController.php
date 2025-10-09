@@ -58,7 +58,7 @@ class IgrejasController extends BaseController
 
         $data = [];
 
-        $igreja = $this->igrejaService->showIgreja(igrejaID: $igrejaID, withAddress: true, withImages: true);
+        $igreja = $this->igrejaService->getByID(igrejaID: $igrejaID, withAddress: true, withImages: true);
 
         if ($igreja === []) {
             return $this->resposta->set_response_error(
