@@ -45,4 +45,31 @@ class IgrejasController extends BaseController
             user_id: $this->user->id
         );
     }
+
+    public function show($igrejaID = null): string
+    {
+        $this->resposta->validate_request('get');
+
+        $data = [];
+
+        $igreja = $this->igrejaService->showIgreja(igrejaID: $igrejaID, withAddress: true, withImages: true);
+
+        if ($igreja === []) {
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'not found',
+                data: ['info' => 'Não há dados para exibir'],
+                user_id: $this->user->id
+            );
+        }
+
+        $data[] = $igreja;
+
+        return $this->resposta->set_response(
+            status: 200,
+            message: 'success',
+            data: $data,
+            user_id: $this->user->id
+        );
+    }
 }

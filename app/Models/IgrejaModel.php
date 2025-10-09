@@ -79,6 +79,39 @@ class IgrejaModel extends AppModel
         return $igrejas;
     }
 
+    public function getByID(
+        int $igrejaID,
+        bool $withAddress = false,
+        bool $withImages = false,
+    ): Igreja {
+        $builder = $this;
+
+        $tableFields = [
+            'igrejas.*'
+        ];
+
+        $builder->select($tableFields);
+        $builder->where('igrejas.superintendente_id', $this->user->id);
+
+        $igreja = $builder->find($igrejaID);
+
+        // Foi encontrado uma Igreja?
+        if (!is_null($igreja)) {
+
+            if ($withImages) {
+                // Sim... então podemos buscar as imagens da mesma
+                $igreja->images = $this->getImageIgreja($igreja->id);
+            }
+
+            if ($withAddress) {
+                $igreja->address = model(AddressModel::class)->find($igreja->address_id);
+            }
+        }
+
+        // Retornamos a Igreja que pode ou não ter imagens
+        return $igreja;
+    }
+
     //Métodos Privados
     private function getImageIgreja(int $igrejaID): array
     {

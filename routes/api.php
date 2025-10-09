@@ -46,10 +46,10 @@ $routes->group('api', ['namespace' => 'App\Controllers\API\V1'], static function
 
         $routes->group('igrejas', ['namespace' => 'App\Controllers\Api\V1\Igrejas'], static function ($routes) {
             $routes->get('list', [IgrejasController::class, 'index']);
-            $routes->get('show/(:num)', [ChurchesController::class, 'show']);
-            $routes->post('create', [ChurchesController::class, 'create']);
-            $routes->put('update/(:num)', [ChurchesController::class, 'update']);
-            $routes->delete('destroy/(:num)', [ChurchesController::class, 'destroy']);
+            $routes->get('show/(:num)', [IgrejasController::class, 'show']);
+            $routes->post('create', [IgrejasController::class, 'create']);
+            $routes->put('update/(:num)', [IgrejasController::class, 'update']);
+            $routes->delete('destroy/(:num)', [IgrejasController::class, 'destroy']);
             $routes->options('', static function () {});
             $routes->options('(:any)', static function () {});
 
