@@ -30,7 +30,28 @@ class CompaniesController extends BaseController
     {
         $this->resposta->validate_request('get');
 
-        $company = $this->companyService->listarCompanies();
+        $companies = $this->companyService->listarCompanies();
+
+        if ($companies === null || $companies === []) {
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'not found',
+                data: ['info' => 'Não há dados para exibir'],
+                user_id: $this->user->id
+            );
+        }
+
+        return $this->resposta->set_response(
+            status: 200,
+            message: 'success',
+            data: $companies,
+            user_id: $this->user->id
+        );
+    }
+
+    public function show(int $companyID)
+    {
+        $company = $this->companyService->getByID($companyID);
 
         if ($company === null || $company === []) {
             return $this->resposta->set_response_error(
@@ -49,7 +70,7 @@ class CompaniesController extends BaseController
         );
     }
 
-    /*public function create()
+    public function create()
     {
         $this->resposta->validate_request('post');
 
@@ -70,7 +91,7 @@ class CompaniesController extends BaseController
 
             $company = new Company($this->validator->getValidated());
 
-            $id = $this->companyModel->insert($company);
+            $id = $this->companyService->criarCompany($company);
 
             if (!$id) {
                 return $this->resposta->set_response_error(
@@ -81,7 +102,7 @@ class CompaniesController extends BaseController
                 );
             }
 
-            $newCompany = $this->companyModel->asObject()->find($id);
+            $newCompany = $this->companyService->getByID($id);
 
 
             return $this->resposta->set_response(
@@ -99,5 +120,101 @@ class CompaniesController extends BaseController
                 user_id: $this->user->id
             );
         }
-    }*/
+    }
+
+    public function update(int $companyID)
+    {
+        $this->resposta->validate_request('put');
+
+        $company = $this->companyService->getByID($companyID);
+        if ($company === null) {
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'not found',
+                data: ['info' => 'Não há dados para exibir'],
+                user_id: $this->user->id
+            );
+        }
+
+        try {
+
+            $rules = (new CompanyValidation)->getRules($companyID);
+
+            if (!$this->validate($rules)) {
+                $data[] = $this->validator->getErrors();
+
+                return $this->resposta->set_response_error(
+                    status: 404,
+                    message: 'error',
+                    data: $data,
+                    user_id: $this->user->id
+                );
+            }
+
+            $inputRequest = $this->validator->getValidated();
+
+            $this->companyService->editarCompany($companyID, $inputRequest);
+
+            $editedCompany = $this->companyService->getByID($companyID);
+
+
+            return $this->resposta->set_response(
+                status: 200,
+                message: 'success',
+                data: $editedCompany,
+                user_id: $this->user->id
+            );
+        } catch (\Exception $e) {
+            log_message('error', '[ERROR] {Edição de Company}', ['exception' => $e]);
+            return $this->resposta->set_response_error(
+                status: 501,
+                message: 'error',
+                data: ['info' => 'Opss! Algo deu errado tente novamente. ', $e->getMessage()],
+                user_id: $this->user->id
+            );
+        }
+    }
+
+    public function destroy(int $companyID)
+    {
+        $company = $this->companyService->getByID($companyID);
+
+        if ($company === null || $company === []) {
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'not found',
+                data: ['info' => 'Não há dados para exibir'],
+                user_id: $this->user->id
+            );
+        }
+
+        try {
+
+            $success = $this->companyService->deleteCompany($companyID);
+
+            if (!$success) {
+                return $this->resposta->set_response_error(
+                    status: 404,
+                    message: 'not found',
+                    data: ['info' => 'Não há dados para exibir'],
+                    user_id: $this->user->id
+                );
+            }
+
+            return $this->resposta->set_response(
+                status: 200,
+                message: 'success',
+                data: $company,
+                user_id: $this->user->id
+            );
+        } catch (\Exception $e) {
+            log_message('error', '[ERROR] {Exclusão de Company}', ['exception' => $e]);
+            return $this->resposta->set_response_error(
+                status: 501,
+                message: 'error',
+                data: ['info' => 'Opss! Algo deu errado tente novamente. ', $e->getMessage()],
+                user_id: $this->user->id
+            );
+        }
+    }
 }
