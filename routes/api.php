@@ -1,5 +1,6 @@
 <?php
 
+use App\Controllers\Api\V1\Companies\CompaniesController;
 use App\Controllers\Api\V1\Igrejas\IgrejasController;
 use App\Controllers\Api\V1\Igrejas\IgrejasImagesController;
 use App\Controllers\Api\V1\LoginController;
@@ -22,6 +23,16 @@ $routes->group('api', ['namespace' => 'App\Controllers\API\V1'], static function
 
         $routes->group('users', ['namespace' => 'App\Controllers\Api\V1'], static function ($routes) {
             $routes->get('user', [UserController::class, 'index']);
+            $routes->options('', static function () {});
+            $routes->options('(:any)', static function () {});
+        });
+
+        $routes->group('companies', ['namespace' => 'App\Controllers\Api\V1\Companies'], static function ($routes) {
+            $routes->get('list', [CompaniesController::class, 'index']);
+            $routes->get('show/(:num)', [CompaniesController::class, 'show']);
+            $routes->post('create', [CompaniesController::class, 'create']);
+            $routes->put('update/(:num)', [CompaniesController::class, 'update']);
+            $routes->delete('destroy/(:num)', [CompaniesController::class, 'destroy']);
             $routes->options('', static function () {});
             $routes->options('(:any)', static function () {});
         });
