@@ -58,6 +58,34 @@ class IgrejasController extends BaseController
 
         $data = [];
 
+        $igreja = $this->igrejaService->showIgreja(igrejaID: $igrejaID, withAddress: true, withImages: true);
+
+        if ($igreja === null || $igreja === []) {
+            return $this->resposta->set_response_error(
+                status: 404,
+                message: 'not found',
+                data: ['info' => 'Não há dados para exibir'],
+                user_id: $this->user->id
+            );
+        }
+
+        $data[] = $igreja;
+
+        return $this->resposta->set_response(
+            status: 200,
+            message: 'success',
+            data: $data,
+            user_id: $this->user->id
+        );
+    }
+
+    //Busca apenas uma Igreja do user logado
+    public function get($igrejaID = null): string
+    {
+        $this->resposta->validate_request('get');
+
+        $data = [];
+
         $igreja = $this->igrejaService->getByID(igrejaID: $igrejaID, withAddress: true, withImages: true);
 
         if ($igreja === []) {
@@ -243,7 +271,7 @@ class IgrejasController extends BaseController
         }
 
         $success = $this->igrejaService->destroy($igreja);
-        
+
         if (!$success) {
             return $this->resposta->set_response_error(
                 status: 404,

@@ -60,14 +60,17 @@ class IgrejaService
 
         $igreja = $this->igrejaModel->getByID(igrejaID: $igrejaID, withAddress: $withAddress, withImages: $withImages);
 
+
         return $igreja;
     }
 
     public function showIgreja(
-        string|null $igrejaID,
+        int $igrejaID,
         bool $withAddress = false,
         bool $withImages = false
-    ): array {
+    ) {
+
+        $data = [];
 
         $igreja = $this->igrejaModel->getByID(igrejaID: $igrejaID, withImages: $withImages, withAddress: $withAddress);
 
@@ -75,31 +78,34 @@ class IgrejaService
         if ($igreja !== null) {
             $image = $igreja->image();
             $address = $igreja->address->getFullAddress();
+
+            $data = [
+                "id" => $igreja->id,
+                "nome" => $igreja->nome,
+                "telefone" => $igreja->telefone,
+                "cnpj" => $igreja->cnpj,
+                "code" => $igreja->code,
+                "situacao" => $igreja->situacao,
+                "user_id" => $igreja->id,
+                "address_id" => $igreja->user_id,
+                "titular_id" => $igreja->titular_id,
+                "is_sede" => $igreja->is_sede,
+                "ativo" => $igreja->ativo,
+                "superintendente_id" => $igreja->superintendente_id,
+                "images" => $image,
+                "address" => $address,
+                "created_at" => $igreja->created_at->humanize(),
+                "updated_at" => $igreja->updated_at->humanize(),
+            ];
         } else {
             $image = [];
             $address = [];
         }
 
-        $data = [];
 
-        $data = [
-            "id" => $igreja->id,
-            "nome" => $igreja->nome,
-            "telefone" => $igreja->telefone,
-            "cnpj" => $igreja->cnpj,
-            "code" => $igreja->code,
-            "situacao" => $igreja->situacao,
-            "user_id" => $igreja->id,
-            "address_id" => $igreja->user_id,
-            "titular_id" => $igreja->titular_id,
-            "is_sede" => $igreja->is_sede,
-            "ativo" => $igreja->ativo,
-            "superintendente_id" => $igreja->superintendente_id,
-            "images" => $image,
-            "address" => $address,
-            "created_at" => $igreja->created_at->humanize(),
-            "updated_at" => $igreja->updated_at->humanize(),
-        ];
+
+
+
 
         return $data;
     }

@@ -106,7 +106,6 @@ class IgrejaModel extends AppModel
 
             if ($withAddress) {
                 $igreja->address = model(AddressModel::class)->find($igreja->address_id);
-                $igreja->endereco = model(AddressModel::class)->asArray()->find($igreja->address_id);
             }
         }
 

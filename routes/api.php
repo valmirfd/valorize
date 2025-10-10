@@ -1,7 +1,5 @@
 <?php
 
-use App\Controllers\Api\V1\Churches\ChurchesController;
-use App\Controllers\Api\V1\Churches\ChurchesImagesController;
 use App\Controllers\Api\V1\Igrejas\IgrejasController;
 use App\Controllers\Api\V1\Igrejas\IgrejasImagesController;
 use App\Controllers\Api\V1\LoginController;
@@ -28,26 +26,10 @@ $routes->group('api', ['namespace' => 'App\Controllers\API\V1'], static function
             $routes->options('(:any)', static function () {});
         });
 
-        $routes->group('churches', ['namespace' => 'App\Controllers\Api\V1\Churches'], static function ($routes) {
-            $routes->get('list', [ChurchesController::class, 'index']);
-            $routes->get('show/(:num)', [ChurchesController::class, 'show']);
-            $routes->post('create', [ChurchesController::class, 'create']);
-            $routes->put('update/(:num)', [ChurchesController::class, 'update']);
-            $routes->delete('destroy/(:num)', [ChurchesController::class, 'destroy']);
-            $routes->options('', static function () {});
-            $routes->options('(:any)', static function () {});
-            //Images
-            $routes->get('image-church/(:any)/(:any)', [ChurchesImagesController::class, 'imageChurch']);
-            $routes->post('upload/(:num)', [ChurchesImagesController::class, 'upload']);
-            $routes->delete('destroy-image/(:num)', [ChurchesImagesController::class, 'deleteImageChurch']);
-            //$routes->options('upload', static function () {});
-            $routes->options('upload/(:any)', static function () {});
-            $routes->options('image-church/(:any)/(:any)', static function () {});
-        });
-
         $routes->group('igrejas', ['namespace' => 'App\Controllers\Api\V1\Igrejas'], static function ($routes) {
             $routes->get('list', [IgrejasController::class, 'index']);
             $routes->get('show/(:num)', [IgrejasController::class, 'show']);
+            $routes->get('get/(:num)', [IgrejasController::class, 'get']);
             $routes->post('create', [IgrejasController::class, 'create']);
             $routes->put('update/(:num)', [IgrejasController::class, 'update']);
             $routes->delete('destroy/(:num)', [IgrejasController::class, 'destroy']);
